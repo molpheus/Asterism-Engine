@@ -10,18 +10,29 @@ namespace Asterism.Engine
 {
     public class ResourceReciver : MonoBehaviour
     {
-        public static async UniTask LoadAsync<T>(string path, Action<T> act)
+        /// <summary>
+        /// 指定パスのファイルを１つだけ取得する
+        /// </summary>
+        /// <typeparam name="T"> 取得オブジェクトのタイプ指定 </typeparam>
+        /// <param name="path"> Addressable GroupのPath </param>
+        /// <returns></returns>
+        public static async UniTask<T> LoadAsync<T>(string path)
         {
             var data = await Addressables.LoadAssetAsync<T>(path);
-            act?.Invoke(data);
+            return data;
         }
 
-        public static async UniTask LoadTagAsync<T>(string labelName, Action<List<T>> act)
+        /// <summary>
+        /// 指定ラベル名のオブジェクトのリストを取得する
+        /// </summary>
+        /// <typeparam name="T"> 取得オブジェクトのタイプ指定 </typeparam>
+        /// <param name="labelName"> Addressable GroupのLabels </param>
+        /// <returns></returns>
+        public static async UniTask<List<T>> LoadTagAsync<T>(string labelName)
         {
             var handle = Addressables.LoadAssetsAsync<T>(labelName, null);
             await handle;
-            act?.Invoke((List<T>)handle.Result);
-            
+            return (List<T>)handle.Result;
         }
     }
 }

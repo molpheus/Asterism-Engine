@@ -15,11 +15,17 @@ namespace Asterism.Engine
             }
             _instance = FindObjectOfType<T>();
             ServiceLocator.Register<T>(_instance);
+            InitializeEngine();
         }
+
+        protected virtual void InitializeEngine() { }
 
         private void OnDestroy()
         {
             ServiceLocator.Unregister<T>(_instance);
+            DestroyEngine();
         }
+
+        protected virtual void DestroyEngine() { }
     }
 }

@@ -1,7 +1,4 @@
 using Cysharp.Threading.Tasks;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.Audio;
 
@@ -23,7 +20,7 @@ namespace Asterism.Engine
         private async UniTaskVoid Start()
         {
             IsInitialize = false;
-            await ResourceReciver.LoadAsync<AudioMixer>(MixerPath, _ => _mixer = _);
+            _mixer = await ResourceReciver.LoadAsync<AudioMixer>(MixerPath);
             var masterGroup = _mixer.FindMatchingGroups("Master");
 
             _bgmController = gameObject.AddComponent<BgmController>();
@@ -47,7 +44,7 @@ namespace Asterism.Engine
         /// <param name="soundData"></param>
         public async void PlayBGM(ISoundId soundData, float volume = 1f, float fade = 0f, bool isCrossFade = false)
         {
-            Debug.Log(soundData);
+            Debugger.Log(soundData);
             if (soundData != null) {
                 AudioClip clip = await soundData.LoadAddressable();
                 _bgmController.SetMixer(GetMixerGroup(soundData.MixerGroupTag));

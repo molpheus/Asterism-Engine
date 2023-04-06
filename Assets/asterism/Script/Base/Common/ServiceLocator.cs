@@ -30,7 +30,7 @@ namespace Asterism
             var type = typeof(T);
 
             if (instances.ContainsKey(type)) {
-                Debug.LogWarning($"すでに同じ型のインスタンスが登録されています：{type.Name}");
+                Debugger.LogWarning($"すでに同じ型のインスタンスが登録されています：{type.Name}");
                 return;
             }
 
@@ -47,12 +47,12 @@ namespace Asterism
             var type = typeof(T);
 
             if (!instances.ContainsKey(type)) {
-                Debug.LogWarning($"要求された型のインスタンスが登録されていません：{type.Name}");
+                Debugger.LogWarning($"要求された型のインスタンスが登録されていません：{type.Name}");
                 return;
             }
 
             if (!Equals(instances[type], instance)) {
-                Debug.LogWarning($"登録されている要求された型のインスタンスと渡されたインスタンスが一致しません：{type.Name}");
+                Debugger.LogWarning($"登録されている要求された型のインスタンスと渡されたインスタンスが一致しません：{type.Name}");
                 return;
             }
 
@@ -95,7 +95,7 @@ namespace Asterism
                 return instances[type] as T;
             }
 
-            Debug.LogError($"要求された型のインスタンスが登録されていません：{type.Name}");
+            Debugger.LogError($"要求された型のインスタンスが登録されていません：{type.Name}");
             return null;
         }
 

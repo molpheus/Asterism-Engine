@@ -160,7 +160,7 @@ namespace Asterism.Audio
         {
             if (!ExtraMath.IsPowerOfTwo(value))
             {
-                ExtendDebug.LogError("error because it is not a power of 2");
+                Debugger.LogError("error because it is not a power of 2");
             }
             else
             {
@@ -199,7 +199,6 @@ namespace Asterism.Audio
             if (!ExtraMath.IsPowerOfTwo(_resolution))
             {
                 // ÇQÇÃÇ◊Ç´èÊÇ≈ÇÕñ≥Ç¢ÇΩÇﬂÉGÉâÅ[
-                //ExtendDebug.LogError("error because it is not a power of 2");
                 return;
             }
 

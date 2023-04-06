@@ -1,21 +1,12 @@
 using Cysharp.Threading.Tasks;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-
-#if UNITY_EDITOR
-using UnityEditor;
-#endif
 
 namespace Asterism.Engine
 {
     using Common;
     using Scriptable;
-
-#pragma warning disable CS0234 // 型または名前空間の名前 'Search' が名前空間 'UnityEditor' に存在しません (アセンブリ参照があることを確認してください)
-    using UnityEditor.Search;
-#pragma warning restore CS0234 // 型または名前空間の名前 'Search' が名前空間 'UnityEditor' に存在しません (アセンブリ参照があることを確認してください)
 
     public abstract class TextManager : EngineBase<TextManager>
     {
@@ -24,8 +15,6 @@ namespace Asterism.Engine
             Resource,   // リソースから読み込み
             Addressable // Addressableから読み込み
         }
-
-        
 
         protected abstract string LoadAddressableTag { get; }
         protected abstract TextLoadType LoadType { get; }
@@ -54,15 +43,17 @@ namespace Asterism.Engine
 
             StateLoaded = LoadState.Load;
             if (LoadType == TextLoadType.Addressable) {
-                await ResourceReciver.LoadTagAsync<TextTableScriptable>(
-                    LoadAddressableTag,
-                    SettableData
-                );
+                var list = await ResourceReciver.LoadTagAsync<TextTableScriptable>(LoadAddressableTag);
+                SettableData(list);
             }
             else if (LoadType == TextLoadType.Resource) {
-                SettableData(
-                    new List<TextTableScriptable>((TextTableScriptable[])Resources.LoadAll(LoadAddressableTag, typeof(TextTableScriptable)))
-                );
+                var resourceList = Resources.LoadAll(LoadAddressableTag, typeof(TextTableScriptable));
+                var list = new List<TextTableScriptable>();
+                foreach(TextTableScriptable textTableScriptable in resourceList)
+                {
+                    list.Add(textTableScriptable);
+                }
+                SettableData(list);
                 
             }
         }
@@ -88,7 +79,7 @@ namespace Asterism.Engine
             }
             else {
                 value = $"not set key, {key} :Check language file data {CurrentCountry}";
-                Debug.LogWarning(value);
+                Debugger.LogWarning(value);
             }
 
             return value;

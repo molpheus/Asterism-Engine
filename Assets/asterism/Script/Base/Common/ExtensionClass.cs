@@ -15,11 +15,10 @@ namespace Asterism
         /// 画像の読み込み
         /// </summary>
         /// <param name="name"> 参照Addressableファイル名 </param>
-        public static async void LoadAddressable(this Image img, string name)
+        public static async UniTask LoadAddressable(this Image img, string name)
         {
-            await ResourceReciver.LoadAsync<Sprite>(name, _ => {
-                img.sprite = _;
-            });
+            var sp = await ResourceReciver.LoadAsync<Sprite>(name);
+            img.sprite = sp;
         }
 
         /// <summary>
@@ -27,14 +26,14 @@ namespace Asterism
         /// </summary>
         /// <param name="labelName"> 参照ラベル名 </param>
         /// <param name="name"> 参照Addressableファイル名 </param>
-        public static async void LoadAddressable(this Image img, string labelName, string name)
+        public static async UniTask LoadAddressable(this Image img, string labelName, string name)
         {
-            await ResourceReciver.LoadTagAsync<Sprite>(labelName, _ => {
-                var sp = _.Where(p => p.name == name).FirstOrDefault();
-                if (sp != default(Sprite)) {
-                    img.sprite = sp;
-                }
-            });
+            var list = await ResourceReciver.LoadTagAsync<Sprite>(labelName);
+            var sp = list.Where(p => p.name == name).FirstOrDefault();
+            if (sp != default(Sprite))
+            {
+                img.sprite = sp;
+            }
         }
 
         /// <summary>
@@ -45,17 +44,12 @@ namespace Asterism
         public static async UniTask<AudioClip> LoadAddressable(this ISoundId soundData)
         {
             AudioClip clip = null;
-            bool isLoad = true;
-            await ResourceReciver.LoadTagAsync<AudioClip>(soundData.LabelPath, _ => {
-                var sp = _.Where(p => p.name == soundData.Path).FirstOrDefault();
-                if (sp != default(Sprite)) {
-                    clip = sp;
-                }
-                isLoad = false;
-            });
-
-            await UniTask.WaitWhile(() => isLoad);
-
+            var list = await ResourceReciver.LoadTagAsync<AudioClip>(soundData.LabelPath);
+            var sp = list.Where(p => p.name == soundData.Path).FirstOrDefault();
+            if (sp != default(Sprite))
+            {
+                clip = sp;
+            }
             return clip;
         }
     }

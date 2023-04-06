@@ -11,7 +11,7 @@ using Asterism.Common;
 namespace Asterism.Addressable
 {
     // https://yuumekou.net/addressable-asset-system-auto/
-    public class PostProcessor : AssetPostprocessor
+    public class AddressableImportProcessor : AssetPostprocessor
     {
         static string AddressableResources {
             get {
@@ -54,7 +54,7 @@ namespace Asterism.Addressable
                 if (group == null) group = CreateAddressableGroup(settings, groupName);
 
                 if (group == null) {
-                    Debug.LogError($"グループの作成に失敗. {groupName}");
+                    Debugger.LogError($"グループの作成に失敗. {groupName}");
                     continue;
                 }
 
