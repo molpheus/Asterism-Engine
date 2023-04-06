@@ -2,17 +2,18 @@
     "name": "com.molmolgames.asterism",
     "displayName": "Asterism Engine",
     "version": "1.0.0",
-    "unity": "2022.1",
+    "unity": "2022.1~",
     "keywords": ["Script"],
     "category": "Script",
-    "description": "unity engine game core engine\n add custom packages.\n [com.cysharp.unitask] \"https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask\"",
+    "description": "original core engine plugins",
     "dependencies": {
         "com.unity.addressables": "1.20.3",
-        "com.unity.cinemachine": "2.8.6"
+        "com.unity.cinemachine": "2.8.6",
+        "com.cysharp.unitask": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask"
     },
     "author": {
         "name": "molpheus",
-        "email": "",
+        "email": "tudoinoizumi@yahoo.co.jp",
         "url": "https://www.molmolgames.com/"
     }
 }
