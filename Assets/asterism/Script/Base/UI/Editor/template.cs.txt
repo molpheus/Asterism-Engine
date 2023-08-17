@@ -1,0 +1,9 @@
+// Auto-generated file
+using Asterism;
+using System;
+using UnityEngine.UIElements;
+
+public class {CLASSNAME}
+{
+{CONTENT}
+}

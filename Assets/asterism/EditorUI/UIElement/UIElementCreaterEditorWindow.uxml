@@ -4,22 +4,26 @@
             <ui:Label tabindex="-1" text="選択したUXMLに対応するスクリプトを吐き出す機能" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Title_Label" style="-unity-text-outline-width: 1px; -unity-text-outline-color: rgba(255, 255, 255, 0); font-size: 20px; -unity-font-style: normal;" />
         </ui:VisualElement>
         <ui:VisualElement name="Content" style="flex-grow: 1; padding-top: 10px; padding-right: 10px; padding-bottom: 10px; padding-left: 10px;">
-            <ui:VisualElement name="SelectItem" style="flex-grow: 0;">
+            <ui:VisualElement style="flex-grow: 0;">
                 <ui:TextField picking-mode="Ignore" label="選択しているアイテム" value="filler text" focusable="false" readonly="true" name="SelectItemField" />
             </ui:VisualElement>
-            <ui:VisualElement name="OutputFilePath" style="flex-grow: 0; flex-direction: row;">
+            <ui:VisualElement style="flex-grow: 0; flex-direction: row;">
                 <ui:TextField picking-mode="Ignore" label="吐き出し先" value="filler text" name="OutputFilePathField" style="flex-shrink: 1; flex-grow: 1;" />
                 <ui:Button text="Open" parse-escape-sequences="true" display-tooltip-when-elided="true" name="OutputFilePathButton" style="flex-shrink: 1;" />
             </ui:VisualElement>
-            <ui:VisualElement name="OutputFileName" style="flex-grow: 0;">
+            <ui:VisualElement style="flex-grow: 0;">
                 <ui:TextField picking-mode="Ignore" label="選択しているアイテム" value="filler text" focusable="true" readonly="false" name="OutputFileNameField" />
                 <ui:VisualElement style="flex-grow: 1; flex-direction: row;">
                     <ui:Label tabindex="-1" text="ExportFileName :" parse-escape-sequences="true" display-tooltip-when-elided="true" />
                     <ui:Label tabindex="-1" text="Label" parse-escape-sequences="true" display-tooltip-when-elided="true" name="CheckOutputFileNameLabel" />
                 </ui:VisualElement>
             </ui:VisualElement>
-            <ui:VisualElement name="Export" style="flex-grow: 0;">
-                <ui:Button text="Export" parse-escape-sequences="true" display-tooltip-when-elided="true" name="ExportButton" />
+            <ui:VisualElement style="flex-grow: 0;">
+                <ui:Button text="Check" parse-escape-sequences="true" display-tooltip-when-elided="true" name="CheckButton" />
+            </ui:VisualElement>
+            <ui:VisualElement name="SelectWindow" style="flex-grow: 1; display: flex; visibility: hidden; overflow: visible;">
+                <ui:ListView focusable="true" name="SelectContent" style="flex-grow: 1;" />
+                <ui:Button text="Button" parse-escape-sequences="true" display-tooltip-when-elided="true" name="ExportButton" />
             </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>
