@@ -2,6 +2,7 @@ using System;
 
 using UnityEngine.Assertions;
 using UnityEngine.UIElements;
+using UnityEngine.Events;
 
 namespace Asterism.UI
 {
@@ -13,7 +14,7 @@ namespace Asterism.UI
         public string Label { get => _textField.label; set => _textField.label = value; }
         public string tooltip { get => _textField.tooltip; set => _textField.tooltip = value; }
 
-        public Action<string> ValueChanged { get; set; }
+        public UnityEvent<string> ValueChanged;
 
         public void Initialize(VisualElement visualElement)
         {

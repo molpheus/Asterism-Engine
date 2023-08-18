@@ -11,7 +11,8 @@ namespace Asterism.UI
         private Button _button { get; set; }
 
         public string Text { get => _button.text; set => _button.text = value; }
-        public Action OnClick { get; set; }
+
+        public UnityEngine.Events.UnityEvent OnClick;
 
         public void Initialize(VisualElement visualElement)
         {

@@ -1,4 +1,5 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <ui:Template name="editor_layout" src="project://database/Assets/asterism/EditorUI/UIElement/editor_layout.uxml?fileID=9197481963319205126&amp;guid=37c5c79ccebc9224ba924cdc40fe62c5&amp;type=3#editor_layout" />
     <ui:VisualElement name="Base" style="flex-grow: 1;">
         <ui:VisualElement name="Title" style="flex-grow: 0; height: auto;">
             <ui:Label tabindex="-1" text="選択したUXMLに対応するスクリプトを吐き出す機能" parse-escape-sequences="true" display-tooltip-when-elided="true" name="Title_Label" style="-unity-text-outline-width: 1px; -unity-text-outline-color: rgba(255, 255, 255, 0); font-size: 20px; -unity-font-style: normal;" />
@@ -18,12 +19,15 @@
                     <ui:Label tabindex="-1" text="Label" parse-escape-sequences="true" display-tooltip-when-elided="true" name="CheckOutputFileNameLabel" />
                 </ui:VisualElement>
             </ui:VisualElement>
-            <ui:VisualElement style="flex-grow: 0;">
+            <ui:VisualElement style="flex-grow: 0; height: 30px;">
                 <ui:Button text="Check" parse-escape-sequences="true" display-tooltip-when-elided="true" name="CheckButton" />
             </ui:VisualElement>
             <ui:VisualElement name="SelectWindow" style="flex-grow: 1; display: flex; visibility: hidden; overflow: visible;">
-                <ui:ListView focusable="true" name="SelectContent" style="flex-grow: 1;" />
-                <ui:Button text="Button" parse-escape-sequences="true" display-tooltip-when-elided="true" name="ExportButton" />
+                <ui:Instance template="editor_layout" name="editor_layout" style="flex-grow: 1;" />
+                <ui:VisualElement style="flex-grow: 0; flex-direction: row; flex-shrink: 0; width: auto; height: 30px;">
+                    <ui:Button text="Export" parse-escape-sequences="true" display-tooltip-when-elided="true" name="ExportButton" style="flex-grow: 1; flex-shrink: 1;" />
+                    <ui:Button text="Attach" parse-escape-sequences="true" display-tooltip-when-elided="true" name="AttachButton" style="flex-shrink: 1; flex-grow: 1;" />
+                </ui:VisualElement>
             </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>

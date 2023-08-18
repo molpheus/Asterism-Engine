@@ -1,6 +1,7 @@
 using System;
 
 using UnityEngine.Assertions;
+using UnityEngine.Events;
 using UnityEngine.UIElements;
 
 namespace Asterism.UI
@@ -14,7 +15,7 @@ namespace Asterism.UI
         public float HighValue { get => _scroller.highValue; set => _scroller.highValue = value; }
         public float Value { get => _scroller.value; set => _scroller.value = value; }
 
-        public Action<float> OnChanged { get; set; }
+        public UnityEvent<float> ValueChanged;
 
         public void Initialize(VisualElement visualElement)
         {
@@ -28,7 +29,7 @@ namespace Asterism.UI
 
         private void _scroller_valueChanged(float value)
         {
-            OnChanged?.Invoke(value);
+            ValueChanged?.Invoke(value);
         }
 
         public void Dispose()

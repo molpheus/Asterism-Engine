@@ -1,9 +1,9 @@
 // Auto-generated file
-using Asterism;
+using Asterism.UI;
 using System;
 using UnityEngine.UIElements;
 
-public class {CLASSNAME}
+public partial class {CLASSNAME} : UIBehaviour
 {
 {CONTENT}
 }

@@ -1,6 +1,7 @@
 using System;
 
 using UnityEngine.Assertions;
+using UnityEngine.Events;
 using UnityEngine.UIElements;
 
 namespace Asterism.UI
@@ -13,7 +14,7 @@ namespace Asterism.UI
         public string Label { get => _toggle.label; set => _toggle.label = value; }
         public bool Value { get => _toggle.value; set => _toggle.value = value; }
 
-        public Action<bool> ValueChanged { get; set; }
+        public UnityEvent<bool> ValueChanged;
 
         public void Initialize(VisualElement visualElement)
         {
