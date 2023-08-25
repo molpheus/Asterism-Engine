@@ -1,7 +1,8 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
+
+using Cysharp.Threading.Tasks.Triggers;
+
 using UnityEngine.Assertions;
 using UnityEngine.Events;
 using UnityEngine.UIElements;
@@ -9,9 +10,9 @@ using UnityEngine.UIElements;
 namespace Asterism.UI
 {
     [Serializable]
-    public class UIElementDropdown : UIElement, IUIElementAttribute, IDisposable
+    public class UIElementDropdown : UIElement
     {
-        private DropdownField _dropDown;
+        private DropdownField _dropDown => Element as DropdownField;
 
         public string Value => _dropDown.value;
         public int Index => _dropDown.index;
@@ -19,14 +20,9 @@ namespace Asterism.UI
 
         public UnityEvent<string> ValueChanged;
 
-
-        public void Initialize(VisualElement visualElement)
+        public override void Initialize(VisualElement visualElement, string[] tagNameList = null)
         {
-            _dropDown = visualElement.SearchElement<DropdownField>(TagNameList, out var element);
-            Element = element;
-
-            Assert.IsNotNull(Element);
-            Assert.IsNotNull(_dropDown);
+            base.Initialize(visualElement, tagNameList);
 
             _dropDown.RegisterValueChangedCallback(HandleCallback);
         }
@@ -36,10 +32,11 @@ namespace Asterism.UI
             ValueChanged?.Invoke(evt.newValue);
         }
 
-        public void Dispose()
+        protected override void Dispose()
         {
+            base.Dispose();
+
             _dropDown.UnregisterValueChangedCallback(HandleCallback);
-            _dropDown = null;
         }
     }
 }

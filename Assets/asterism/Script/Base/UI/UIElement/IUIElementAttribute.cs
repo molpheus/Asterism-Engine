@@ -7,7 +7,6 @@ namespace Asterism.UI
 {
     public interface IUIElementAttribute
     {
-        VisualElement Element { get; }
-        void Initialize(VisualElement visualElement);
+        void Initialize(VisualElement visualElement, string[] tagNameList = null);
     }
 }

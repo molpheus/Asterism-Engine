@@ -7,9 +7,9 @@ using UnityEngine.UIElements;
 namespace Asterism.UI
 {
     [Serializable]
-    public class UIElementSlider : UIElement, IUIElementAttribute, IDisposable
+    public class UIElementSlider : UIElement
     {
-        private Slider _slider;
+        private Slider _slider => Element as Slider;
 
         public float Value { get => _slider.value; set => _slider.value = value; }
         public float HighValue { get => _slider.highValue; set => _slider.highValue = value; }
@@ -17,12 +17,9 @@ namespace Asterism.UI
 
         public UnityEvent<float> ValueChanged;
 
-        public void Initialize(VisualElement visualElement)
+        public override void Initialize(VisualElement visualElement, string[] tagNameList = null)
         {
-            _slider = visualElement.SearchElement<Slider>(TagNameList, out var element);
-            Element = element;
-            Assert.IsNotNull(_slider);
-
+            base.Initialize(visualElement, tagNameList);
             _slider.RegisterValueChangedCallback(HandleCallback);
         }
 
@@ -31,10 +28,10 @@ namespace Asterism.UI
             ValueChanged?.Invoke(evt.newValue);
         }
 
-        public void Dispose()
+        protected override void Dispose()
         {
+            base.Dispose();
             _slider.UnregisterValueChangedCallback(HandleCallback);
-            _slider = null;
         }
     }
 }

@@ -1,28 +1,22 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+
 using UnityEngine.Assertions;
 using UnityEngine.UIElements;
 
 namespace Asterism.UI
 {
-    public class UIElementRadioButtonGroup : UIElement, IUIElementAttribute, IDisposable
+    public class UIElementRadioButtonGroup : UIElement
     {
-        private RadioButtonGroup _group;
+        private RadioButtonGroup _group => Element as RadioButtonGroup;
 
-        public void Initialize(VisualElement visualElement)
+        public override void Initialize(VisualElement visualElement, string[] tagNameList = null)
         {
-            _group = visualElement.SearchElement<RadioButtonGroup>(TagNameList, out var element);
-            Element = element;
-
-            Assert.IsNotNull(Element);
-            Assert.IsNotNull(_group);
+            base.Initialize(visualElement, tagNameList);
         }
 
-        public void Dispose()
+        protected override void Dispose()
         {
-            _group = null;
+            base.Dispose();
         }
     }
 }

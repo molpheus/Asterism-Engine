@@ -6,18 +6,18 @@ using UnityEngine.UIElements;
 
 namespace Asterism.UI
 {
-    public class UIElementEnum : UIElement
+    public class UIElementFoldout : UIElement
     {
-        private EnumField _enumField => Element as EnumField;
-        public UnityEvent<Enum> ValueChanged;
+        private Foldout _foldout => Element as Foldout;
+        public UnityEvent<bool> ValueChanged;
 
         public override void Initialize(VisualElement visualElement, string[] tagNameList = null)
         {
             base.Initialize(visualElement, tagNameList);
-            _enumField.RegisterValueChangedCallback(HandleCallback);
+            _foldout.RegisterValueChangedCallback(HandleCallback);
         }
 
-        private void HandleCallback(ChangeEvent<Enum> evt)
+        private void HandleCallback(ChangeEvent<bool> evt)
         {
             ValueChanged?.Invoke(evt.newValue);
         }
@@ -26,7 +26,7 @@ namespace Asterism.UI
         protected override void Dispose()
         {
             base.Dispose();
-            _enumField.UnregisterValueChangedCallback(HandleCallback);
+            _foldout.UnregisterValueChangedCallback(HandleCallback);
         }
     }
 }

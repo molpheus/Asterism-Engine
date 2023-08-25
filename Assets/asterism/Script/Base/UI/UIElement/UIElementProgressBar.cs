@@ -7,9 +7,9 @@ using UnityEngine.UIElements;
 namespace Asterism.UI
 {
     [Serializable]
-    public sealed class UIElementProgressBar : UIElement, IUIElementAttribute, IDisposable
+    public sealed class UIElementProgressBar : UIElement
     {
-        private ProgressBar _progressBar;
+        private ProgressBar _progressBar => Element as ProgressBar;
 
         public float Value { get => _progressBar.value; set => _progressBar.value = value; }
         public float HighValue { get => _progressBar.highValue; set => _progressBar.highValue = value; }
@@ -17,14 +17,13 @@ namespace Asterism.UI
 
         public UnityEvent<float> ValueChanged;
 
-        public void Initialize(VisualElement visualElement)
-        {
-            _progressBar = visualElement.SearchElement<ProgressBar>(TagNameList, out var element);
-            Element = element;
-            Assert.IsNotNull(_progressBar);
 
+        public override void Initialize(VisualElement visualElement, string[] tagNameList = null)
+        {
+            base.Initialize(visualElement, tagNameList);
             _progressBar.RegisterValueChangedCallback(HandleCallback);
         }
+
 
         private void HandleCallback(ChangeEvent<float> evt)
         {
@@ -32,10 +31,11 @@ namespace Asterism.UI
         }
 
 
-        public void Dispose()
+        protected override void Dispose()
         {
+            base.Dispose();
             _progressBar.UnregisterValueChangedCallback(HandleCallback);
-            _progressBar = null;
         }
+
     }
 }

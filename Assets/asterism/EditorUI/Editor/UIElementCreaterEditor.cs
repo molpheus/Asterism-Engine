@@ -16,6 +16,8 @@ using Unity.VisualScripting;
 using System.Linq;
 using static Codice.CM.Common.Serialization.PacketFileReader;
 using UnityEditor.PackageManager;
+using PlasticPipe.PlasticProtocol.Messages;
+using static Asterism.UI.UIElementCreaterEditor;
 
 namespace Asterism.UI
 {
@@ -63,7 +65,11 @@ namespace Asterism.UI
             public bool check;
             public string path;
             public string type;
+            public string structName;
             public string variable;
+            public bool add;
+
+            public bool isDisable;
 
             public VariableType variableType;
 
@@ -79,6 +85,11 @@ namespace Asterism.UI
                 this.pathList = pathList;
                 this.element = element;
                 this.type = element.GetType().Name;
+
+                this.add = true;
+                this.isDisable = false;
+
+                this.structName = "";
             }
 
             public void UpdateText(ChangeEvent<string> value)
@@ -92,6 +103,16 @@ namespace Asterism.UI
                 {
                     variableType = value;
                 }
+            }
+
+            public void UpdateAddCheck(ChangeEvent<bool> value)
+            {
+                add = value.newValue;
+            }
+
+            public void UpdateStructName(ChangeEvent<string> value)
+            {
+                structName = value.newValue;
             }
         }
 
@@ -141,7 +162,7 @@ namespace Asterism.UI
             _outputItemField = rootVisualElement.Q<TextField>("OutputFilePathField");
             _outputFileNameField = rootVisualElement.Q<TextField>("OutputFileNameField");
             _selectWindow = rootVisualElement.Q("SelectWindow");
-
+            
             // 確認ボタンが押されたときの処理
             rootVisualElement.Q<Button>("CheckButton").clicked += CreateElement;
             // フォルダ選択ボタンが押されたときの処理
@@ -237,30 +258,11 @@ namespace Asterism.UI
         /// <returns></returns>
         private bool GetElement(VisualElement element, ref Dictionary<string[], VisualElement> elementList)
         {
-            var isUIElement = false;
-            var isContent = element switch {
-                Label => true,
-                Button => true,
-                Toggle => true,
-                Scroller => true,
-                TextField => true,
-                Foldout => true,
-                Slider => true,
-                SliderInt => true,
-                MinMaxSlider => true,
-                ProgressBar => true,
-                DropdownField => true,
-                EnumField => true,
-                RadioButton => true,
-                RadioButtonGroup => true,
-                _ => false
-            };
-
-            if (isContent)
+            var parent = element.parent;
+            var pathList = new List<string>();
+            if (!string.IsNullOrEmpty(element.name))
             {
                 bool isEnd = false;
-                var parent = element.parent;
-                var pathList = new List<string>();
                 pathList.Add(element.name);
                 while (!isEnd)
                 {
@@ -276,12 +278,24 @@ namespace Asterism.UI
 
                 elementList.Add(pathList.ToArray(), element);
             }
-            else
-            {
-                isUIElement = true;
-            }
 
-            return isUIElement;
+            return element switch {
+                Label => false,
+                Button => false,
+                Toggle => false,
+                Scroller => false,
+                TextField => false,
+                Slider => false,
+                SliderInt => false,
+                MinMaxSlider => false,
+                ProgressBar => false,
+                DropdownField => false,
+                EnumField => false,
+                RadioButton => false,
+                Foldout => true,
+                RadioButtonGroup => true,
+                _ => true
+            };
         }
 
         /// <summary>
@@ -307,10 +321,11 @@ namespace Asterism.UI
                 EnumField => new UIElementEnum(),
                 RadioButton => new UIElementRadioButton(),
                 RadioButtonGroup => new UIElementRadioButtonGroup(),
-                _ => null
+                _ => new UIElement(),
             };
         }
 
+        [Obsolete]
         private void ViewCheckItems()
         {
             _selectWindow.visible = _elementList.Count > 0;
@@ -334,39 +349,99 @@ namespace Asterism.UI
                             label += " < ";
                         label += e2;
                     }
-                    var content = saveList.Any(e => e.path == label)
-                        ? saveList.First(e => e.path == label)
-                        : new CheckItemListContent(label, e.Value, e.Key);
 
-                    content.element = e.Value;
+                    CheckItemListContent content = null;
+
+                    var obj = saveList.FirstOrDefault(e => label == e.path);
+
+                    if (obj is CheckItemListContent c)
+                    {
+                        content = c;
+                        content.variable = e.Value.name;
+
+                        saveList.Remove(c);
+                    }
+                    else
+                    {
+                        content = new CheckItemListContent(label, e.Value, e.Key);
+                        content.variable = e.Value.name;
+                    }
+
                     _saveData.checkList.Add( content );
+                }
+
+                foreach(var e in saveList)
+                {
+                    e.add = false;
+                    e.isDisable = true;
+                    _saveData.checkList.Add(e);
                 }
 
                 selectContent.itemsSource = _saveData.checkList;
                 var checkboxColumn = selectContent.columns["check"];
                 var pathColumn = selectContent.columns["path"];
                 var typeColumn = selectContent.columns["type"];
+                var structColumn = selectContent.columns["struct"];
                 var variableTypeColumn = selectContent.columns["variable_type"];
                 var variableColumn = selectContent.columns["variable"];
+                var addColumn = selectContent.columns["add"];
 
                 // レイアウトを作成する処理
                 checkboxColumn.makeCell = () => new Toggle();
                 pathColumn.makeCell = () => new Label();
                 typeColumn.makeCell = () => new Label();
+                structColumn.makeCell = () => new TextField();
                 variableTypeColumn.makeCell = () => new EnumField(VariableType.PUBLIC);
                 variableColumn.makeCell = () => new TextField();
+                addColumn.makeCell = () => new Toggle();
 
                 // 内容を設定する処理
                 checkboxColumn.bindCell = (e, i) => (e as Toggle).value = _saveData.checkList[i].check;
                 pathColumn.bindCell = (e, i) => (e as Label).text = _saveData.checkList[i].path;
                 typeColumn.bindCell = (e, i) => (e as Label).text = _saveData.checkList[i].type;
+
+                structColumn.bindCell = (e, i) => {
+                    if (e is TextField field)
+                    {
+                        field.value = _saveData.checkList[i].structName;
+                        field.RegisterValueChangedCallback(_saveData.checkList[i].UpdateStructName);
+                    }
+                };
+                structColumn.unbindCell = (e, i) => {
+                    if (e is TextField field)
+                    {
+                        field.UnregisterValueChangedCallback(_saveData.checkList[i].UpdateStructName);
+                    }
+                };
+
                 variableTypeColumn.bindCell = (e, i) => {
                     (e as EnumField).value = _saveData.checkList[i].variableType;
-                    (e as EnumField).RegisterValueChangedCallback<Enum>(_saveData.checkList[i].UpdateVariavleType);
+                    (e as EnumField).RegisterValueChangedCallback(_saveData.checkList[i].UpdateVariavleType);
                 };
+                variableTypeColumn.unbindCell = (e, i) => {
+                    (e as EnumField).UnregisterValueChangedCallback(_saveData.checkList[i].UpdateVariavleType);
+                };
+
                 variableColumn.bindCell = (e, i) => {
                     (e as TextField).value = _saveData.checkList[i].variable;
-                    (e as TextField).RegisterValueChangedCallback<string>(_saveData.checkList[i].UpdateText);
+                    (e as TextField).RegisterValueChangedCallback(_saveData.checkList[i].UpdateText);
+                };
+                variableColumn.unbindCell = (e, i) => {
+                    (e as TextField).UnregisterValueChangedCallback(_saveData.checkList[i].UpdateText);
+                };
+
+                addColumn.bindCell = (e, i) => {
+                    if (e is Toggle toggle)
+                    {
+                        toggle.value = _saveData.checkList[i].add;
+                        toggle.RegisterValueChangedCallback(_saveData.checkList[i].UpdateAddCheck);
+                    }
+                };
+                addColumn.unbindCell = (e, i) => {
+                    if (e is Toggle toggle)
+                    {
+                        toggle.UnregisterValueChangedCallback(_saveData.checkList[i].UpdateAddCheck);
+                    }
                 };
 
                 checkboxColumn.visible = false;
@@ -380,29 +455,73 @@ namespace Asterism.UI
             var filePath = AssetDatabase.GUIDToAssetPath(EXPORT_TEMPLATE_FILE_GUID);
             var fileData = System.IO.File.ReadAllText(filePath);
 
+            // クラス名
             fileData = fileData.Replace("{CLASSNAME}", _outputFileNameField.value);
 
-            var content = new StringBuilder();
-            foreach (var item in _saveData.checkList)
+            
+            // 構造体別にデータを保存
+            Dictionary<string, List<CheckItemListContent>> contentList = new();
+            foreach(var item in _saveData.checkList)
             {
-                if (string.IsNullOrEmpty(item.variable)) continue;
-
-                var variableType = item.variableType switch {
-                    VariableType.PUBLIC => "public",
-                    VariableType.PRIVATE => "private",
-                    VariableType.PROTECTED => "protected",
-                    VariableType.PRIVATE_SerializeField => "[UnityEngine.SerializeField] private",
-                    VariableType.PROTECTED_SerializeField => "[UnityEngine.SerializeField] protected",
-                    VariableType.PUBLIC_READONLY => "public readonly",
-                    VariableType.PRIVATE_READONLY => "private readonly",
-                    VariableType.PROTECTED_READONLY => "protected readonly",
-                    _ => ""
-                };
-
-                content.AppendLine($"{tabSpace}{variableType} {CreateUIElement(item.element).GetType().Name} {item.variable} = new() {{");
-                content.AppendLine($"{tabSpace}{tabSpace}TagNameList = new[] {{ {StringArrWithOpen(item.pathList)} }}");
-                content.AppendLine($"{tabSpace}}};");
+                if (contentList.ContainsKey(item.structName))
+                {
+                    contentList[item.structName].Add(item);
+                }
+                else
+                {
+                    var list = new List<CheckItemListContent>() {
+                        item
+                    };
+                    contentList.Add(item.structName, list);
+                }
             }
+
+
+            // 宣言の追加
+            var content = new StringBuilder();
+            foreach(var keyValue in contentList)
+            {
+                int baseTab = 1;
+                if (string.IsNullOrEmpty(keyValue.Key))
+                {
+                    foreach(var item in keyValue.Value)
+                    {
+                        CreateVariable(baseTab, item, ref content);
+                    }
+                }
+                else
+                {
+                    var pascalStr = ExtensionString.ToPascal(keyValue.Key);
+                    var camelStr = ExtensionString.ToCamel(keyValue.Key);
+                    content.AppendLine(
+                        CreateTagString(baseTab, $"public class {pascalStr} {{")
+                    );
+                    StringBuilder builder = new(); 
+                    foreach (var item in keyValue.Value)
+                    {
+                        CreateVariable(baseTab + 1, item, ref content);
+                        builder.AppendLine(
+                            CreateTagString(baseTab + 2, $"{item.variable}.Initialize(element);")
+                        );
+                    }
+                    content.AppendLine(
+                        CreateTagString(baseTab + 1, $"public {pascalStr} (VisualElement element) {{")
+                    );
+                    content.AppendLine(builder.ToString());
+                    content.AppendLine(
+                        CreateTagString(baseTab + 1, $"}}")
+                    );
+
+                    content.AppendLine(
+                        CreateTagString(baseTab, $"}}")
+                    );
+
+                    content.AppendLine(
+                        CreateTagString(baseTab, $"protected {pascalStr} {camelStr};")
+                    );
+                }
+            }
+
             var contentStr = content.ToString();
             fileData = fileData.Replace("{CONTENT}", contentStr);
 
@@ -427,14 +546,60 @@ namespace Asterism.UI
                 var generateAssetPath = AssetDatabase.GenerateUniqueAssetPath(prefabPath);
                 var prefab = new GameObject(_outputFileNameField.value);
 
+                var visualTree = AssetDatabase.LoadAssetAtPath(_selectItemField.value, typeof(VisualTreeAsset)) as VisualTreeAsset;
+
                 var uiDocument = prefab.AddComponent<UIDocument>();
-                uiDocument.visualTreeAsset = _visualTree;
+                uiDocument.visualTreeAsset = visualTree;
 
                 PrefabUtility.SaveAsPrefabAssetAndConnect(prefab, generateAssetPath, InteractionMode.AutomatedAction);
             }
             ExportSave();
 
             AssetDatabase.Refresh();
+        }
+
+        private string CreateTagString(int tab, string value)
+        {
+            var tabSpace = "    ";
+            var content = new StringBuilder();
+
+            for(int i = 0; i < tab; i++)
+                content.Append(tabSpace);
+
+            content.Append(value);
+
+            return content.ToString();
+        }
+
+        private string GetVariableType(VariableType type)
+        {
+            return type switch {
+                VariableType.PUBLIC => "public",
+                VariableType.PRIVATE => "private",
+                VariableType.PROTECTED => "protected",
+                VariableType.PRIVATE_SerializeField => "[UnityEngine.SerializeField] private",
+                VariableType.PROTECTED_SerializeField => "[UnityEngine.SerializeField] protected",
+                VariableType.PUBLIC_READONLY => "public readonly",
+                VariableType.PRIVATE_READONLY => "private readonly",
+                VariableType.PROTECTED_READONLY => "protected readonly",
+                _ => ""
+            };
+        }
+
+        private void CreateVariable(int baseSpace, CheckItemListContent content, ref StringBuilder builder)
+        {
+            var variable = GetVariableType(content.variableType);
+            var variableName = CreateUIElement(content.element)?.GetType().Name;
+
+            builder.AppendLine(
+                CreateTagString(baseSpace, $"{variable} {variableName} {content.variable} = new() {{")
+            );
+            builder.AppendLine(
+                CreateTagString(baseSpace + 1, $"TagNameList = new[] {{ {StringArrWithOpen(content.pathList)} }}")
+            );
+            builder.AppendLine(
+                CreateTagString(baseSpace, $"}};")
+            );
         }
 
         private string StringArrWithOpen(string[] list)

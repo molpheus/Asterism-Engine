@@ -1,7 +1,5 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+
 using UnityEngine.Assertions;
 using UnityEngine.Events;
 using UnityEngine.UIElements;
@@ -9,9 +7,9 @@ using UnityEngine.UIElements;
 namespace Asterism.UI
 {
     [Serializable]
-    public class UIElementSliderInt : UIElement, IUIElementAttribute, IDisposable
+    public class UIElementSliderInt : UIElement
     {
-        private SliderInt _slider;
+        private SliderInt _slider => Element as SliderInt;
 
         public int Value { get => _slider.value; set => _slider.value = value; }
         public int HighValue { get => _slider.highValue; set => _slider.highValue = value; }
@@ -19,11 +17,9 @@ namespace Asterism.UI
 
         public UnityEvent<int> ValueChanged;
 
-        public void Initialize(VisualElement visualElement)
+        public override void Initialize(VisualElement visualElement, string[] tagNameList = null)
         {
-            _slider = visualElement.SearchElement<SliderInt>(TagNameList, out var element);
-            Element = element;
-            Assert.IsNotNull(_slider);
+            base.Initialize(visualElement, tagNameList);
             _slider.RegisterValueChangedCallback(HandleCallback);
         }
 
@@ -32,10 +28,10 @@ namespace Asterism.UI
             ValueChanged?.Invoke(evt.newValue);
         }
 
-        public void Dispose()
+        protected override void Dispose()
         {
+            base.Dispose();
             _slider.UnregisterValueChangedCallback(HandleCallback);
-            _slider = null;
         }
     }
 }

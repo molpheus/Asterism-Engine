@@ -7,7 +7,7 @@ using UnityEngine.UIElements;
 namespace Asterism.UI
 {
     [Serializable]
-    public sealed class UIElementToggle : UIElement, IUIElementAttribute, IDisposable
+    public sealed class UIElementToggle : UIElement
     {
         private Toggle _toggle;
 
@@ -16,14 +16,9 @@ namespace Asterism.UI
 
         public UnityEvent<bool> ValueChanged;
 
-        public void Initialize(VisualElement visualElement)
+        public override void Initialize(VisualElement visualElement, string[] tagNameList = null)
         {
-            _toggle = visualElement.SearchElement<Toggle>(TagNameList, out var element);
-            Element = element;
-
-            Assert.IsNotNull(Element);
-            Assert.IsNotNull(_toggle);
-
+            base.Initialize(visualElement, tagNameList);
             _toggle.RegisterValueChangedCallback(HandleCallback);
         }
 
@@ -32,12 +27,10 @@ namespace Asterism.UI
             ValueChanged?.Invoke(evt.newValue);
         }
 
-        public void Dispose()
+        protected override void Dispose()
         {
-            if (_toggle != null)
-                _toggle.UnregisterValueChangedCallback(HandleCallback);
-
-            _toggle = null;
+            base.Dispose();
+            _toggle.UnregisterValueChangedCallback(HandleCallback);
         }
     }
 }

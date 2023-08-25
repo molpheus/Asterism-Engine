@@ -6,24 +6,20 @@ using UnityEngine.UIElements;
 namespace Asterism.UI
 {
     [Serializable]
-    public sealed class UIElementLabel : UIElement, IUIElementAttribute, IDisposable
+    public sealed class UIElementLabel : UIElement
     {
-        private Label _label;
+        private Label _label => Element as Label;
 
         public string Text { get => _label.text; set => _label.text = value; }
 
-        public void Initialize(VisualElement visualElement)
+        public override void Initialize(VisualElement visualElement, string[] tagNameList = null)
         {
-            _label = visualElement.SearchElement<Label>(TagNameList, out var element);
-            Element = element;
-
-            Assert.IsNotNull(Element);
-            Assert.IsNotNull(_label);
+            base.Initialize(visualElement, tagNameList);
         }
 
-        public void Dispose()
+        protected override void Dispose()
         {
-            _label = null;
+            
         }
     }
 }

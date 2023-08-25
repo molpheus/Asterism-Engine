@@ -7,9 +7,9 @@ using UnityEngine.UIElements;
 namespace Asterism.UI
 {
     [Serializable]
-    public sealed class UIElementScroller : UIElement, IUIElementAttribute, IDisposable
+    public sealed class UIElementScroller : UIElement
     {
-        private Scroller _scroller;
+        private Scroller _scroller => Element as Scroller;
 
         public float LowValue { get => _scroller.lowValue; set => _scroller.lowValue = value; }
         public float HighValue { get => _scroller.highValue; set => _scroller.highValue = value; }
@@ -17,13 +17,9 @@ namespace Asterism.UI
 
         public UnityEvent<float> ValueChanged;
 
-        public void Initialize(VisualElement visualElement)
+        public override void Initialize(VisualElement visualElement, string[] tagNameList = null)
         {
-            _scroller = visualElement.SearchElement<Scroller>(TagNameList, out var element);
-            Element = element;
-
-            Assert.IsNotNull(Element);
-
+            base.Initialize(visualElement, tagNameList);
             _scroller.valueChanged += _scroller_valueChanged;
         }
 
@@ -32,12 +28,10 @@ namespace Asterism.UI
             ValueChanged?.Invoke(value);
         }
 
-        public void Dispose()
+        protected override void Dispose()
         {
-            if (_scroller != null)
-                _scroller.valueChanged -= _scroller_valueChanged;
-            
-            _scroller = null;
+            base.Dispose();
+            _scroller.valueChanged -= _scroller_valueChanged;
         }
     }
 }

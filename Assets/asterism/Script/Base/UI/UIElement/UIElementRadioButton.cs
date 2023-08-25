@@ -1,40 +1,35 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+
 using UnityEngine.Assertions;
 using UnityEngine.Events;
 using UnityEngine.UIElements;
 
 namespace Asterism.UI
 {
-    public class UIElementRadioButton : UIElement, IUIElementAttribute, IDisposable
+    public class UIElementRadioButton : UIElement
     {
-        private RadioButton _radioButton;
+        private RadioButton _radioButton => Element as RadioButton;
 
         public UnityEvent<bool> ValueChanged;
 
-        public void Initialize(VisualElement visualElement)
+
+        public override void Initialize(VisualElement visualElement, string[] tagNameList = null)
         {
-            _radioButton = visualElement.SearchElement<RadioButton>(TagNameList, out var element);
-            Element = element;
-
-            Assert.IsNotNull(Element);
-            Assert.IsNotNull(_radioButton);
-
+            base.Initialize(visualElement, tagNameList);
             _radioButton.RegisterValueChangedCallback(HandleCallback);
         }
+
+
+        protected override void Dispose()
+        {
+            base.Dispose();
+            _radioButton.UnregisterValueChangedCallback(HandleCallback);
+        }
+
 
         private void HandleCallback(ChangeEvent<bool> evt)
         {
             ValueChanged?.Invoke(evt.newValue);
-        }
-
-
-        public void Dispose()
-        {
-            _radioButton.UnregisterValueChangedCallback(HandleCallback);
-            _radioButton = null;
         }
     }
 }

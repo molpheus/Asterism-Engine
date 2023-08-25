@@ -1,25 +1,23 @@
 using System;
 
+using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.UIElements;
 
 namespace Asterism.UI
 {
     [Serializable]
-    public sealed class UIElementButton : UIElement, IUIElementAttribute, IDisposable
+    public sealed class UIElementButton : UIElement
     {
-        private Button _button { get; set; }
+        private Button _button => Element as Button;
 
         public string Text { get => _button.text; set => _button.text = value; }
 
         public UnityEngine.Events.UnityEvent OnClick;
 
-        public void Initialize(VisualElement visualElement)
+        public override void Initialize(VisualElement visualElement, string[] tagNameList = null)
         {
-            _button = null;
-            _button = visualElement.SearchElement<Button>(TagNameList, out var element);
-            Element = element;
-            Assert.IsNotNull(_button);
+            base.Initialize(visualElement, tagNameList);
             _button.clicked += ButtOnClicked;
         }
 
@@ -28,12 +26,10 @@ namespace Asterism.UI
             OnClick?.Invoke();
         }
 
-        public void Dispose()
+        protected override void Dispose()
         {
-            if (_button != null)
-                _button.clicked -= ButtOnClicked;
-
-            _button = null;
+            base.Dispose();
+            _button.clicked -= ButtOnClicked;
         }
     }
 }

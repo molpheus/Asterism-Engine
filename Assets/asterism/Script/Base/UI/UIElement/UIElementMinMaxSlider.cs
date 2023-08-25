@@ -1,6 +1,5 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
+
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Events;
@@ -8,9 +7,9 @@ using UnityEngine.UIElements;
 
 namespace Asterism.UI
 {
-    public class UIElementMinMaxSlider : UIElement, IUIElementAttribute, IDisposable
+    public class UIElementMinMaxSlider : UIElement
     {
-        private MinMaxSlider _slider;
+        private MinMaxSlider _slider => Element as MinMaxSlider;
 
         public float LowerValue => _slider.value.x;
         public float HigherValue => _slider.value.y;
@@ -20,12 +19,9 @@ namespace Asterism.UI
 
         public UnityEvent<Vector2> ValueChanged;
 
-        public void Initialize(VisualElement visualElement)
+        public override void Initialize(VisualElement visualElement, string[] tagNameList = null)
         {
-            _slider = visualElement.SearchElement<MinMaxSlider>(TagNameList, out var element);
-            Element = element;
-            Assert.IsNotNull(_slider);
-
+            base.Initialize(visualElement, tagNameList);
             _slider.RegisterValueChangedCallback(HandleCallback);
         }
 
@@ -34,11 +30,10 @@ namespace Asterism.UI
             ValueChanged?.Invoke(evt.newValue);
         }
 
-
-        public void Dispose()
+        protected override void Dispose()
         {
+            base.Dispose();
             _slider.UnregisterValueChangedCallback(HandleCallback);
-            _slider = null;
         }
     }
 }
