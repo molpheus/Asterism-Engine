@@ -1,8 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-
-using Codice.Client.BaseCommands.Merge;
 
 using UnityEngine;
 using UnityEngine.Events;
@@ -41,7 +37,7 @@ namespace Asterism.UI
         private ButtonExitEvent _onExit = new ButtonExitEvent();
         [FormerlySerializedAs("onClick"), SerializeField]
         private ButtonClickEvent _onClick = new ButtonClickEvent();
-        
+
         /// <summary>  </summary>
         public ButtonDownEvent OnDown => _onDown;
         /// <summary>  </summary>

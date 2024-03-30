@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Asterism.Engine
@@ -9,11 +7,12 @@ namespace Asterism.Engine
         private T _instance;
         private void Awake()
         {
-            if (ServiceLocator.IsRegistered<T>()) {
+            if (ServiceLocator.IsRegistered<T>())
+            {
                 Destroy(this);
                 return;
             }
-            _instance = FindObjectOfType<T>();
+            _instance = FindFirstObjectByType<T>();
             ServiceLocator.Register<T>(_instance);
             InitializeEngine();
         }

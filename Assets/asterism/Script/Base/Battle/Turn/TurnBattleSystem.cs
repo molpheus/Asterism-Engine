@@ -1,8 +1,7 @@
-using Cysharp.Threading.Tasks;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
+
+using Cysharp.Threading.Tasks;
 
 namespace Asterism.Battle.Turn
 {
@@ -22,7 +21,8 @@ namespace Asterism.Battle.Turn
 
             _turnCnt = 0;
             int currentId = 0;
-            do {
+            do
+            {
                 _turnCnt++;
                 // ターン開始直後
                 await StartTurn(lotList[currentId]);
@@ -32,7 +32,8 @@ namespace Asterism.Battle.Turn
                     ? await CPUTurn(lotList[currentId], lotList)
                     : await UserTurn(lotList[currentId], lotList);
 
-                if (actionData.IsForceExit) {
+                if (actionData.IsForceExit)
+                {
                     break;
                 }
 
@@ -42,7 +43,8 @@ namespace Asterism.Battle.Turn
                 // ターンを進める
                 var prevId = currentId;
                 currentId++;
-                if (lotList.Count < currentId) {
+                if (lotList.Count < currentId)
+                {
                     currentId = 0;
                 }
                 // ターン終了時
@@ -90,7 +92,7 @@ namespace Asterism.Battle.Turn
         /// <param name="current"> そのアクションをしたキャラクタ </param>
         /// <param name="lotList"> 抽選内容 </param>
         /// <returns> 抽選内容のデータ更新結果 </returns>
-        protected virtual async UniTask<List<IParameter>> Calculation(IActionData actionData, IParameter current,List<IParameter> lotList) { await UniTask.CompletedTask; return lotList; }
+        protected virtual async UniTask<List<IParameter>> Calculation(IActionData actionData, IParameter current, List<IParameter> lotList) { await UniTask.CompletedTask; return lotList; }
 
         /// <summary>
         /// ターン終了時

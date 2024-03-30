@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+
 using UnityEngine;
 
 namespace Asterism
@@ -9,7 +10,7 @@ namespace Asterism
         /// <summary>
         /// インスタンスを登録する辞書。
         /// </summary>
-        static readonly Dictionary<Type, object> instances = new Dictionary<Type, object>();
+        static readonly Dictionary<Type, object> _instances = new Dictionary<Type, object>();
 
         /// <summary>
         /// インスタンスの登録をすべて解除します。
@@ -17,7 +18,7 @@ namespace Asterism
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.SubsystemRegistration)]
         static void Initialize()
         {
-            instances.Clear();
+            _instances.Clear();
         }
 
         /// <summary>
@@ -29,12 +30,13 @@ namespace Asterism
         {
             var type = typeof(T);
 
-            if (instances.ContainsKey(type)) {
+            if (_instances.ContainsKey(type))
+            {
                 Debugger.LogWarning($"すでに同じ型のインスタンスが登録されています：{type.Name}");
                 return;
             }
 
-            instances[type] = instance;
+            _instances[type] = instance;
         }
 
         /// <summary>
@@ -46,17 +48,19 @@ namespace Asterism
         {
             var type = typeof(T);
 
-            if (!instances.ContainsKey(type)) {
+            if (!_instances.ContainsKey(type))
+            {
                 Debugger.LogWarning($"要求された型のインスタンスが登録されていません：{type.Name}");
                 return;
             }
 
-            if (!Equals(instances[type], instance)) {
+            if (!Equals(_instances[type], instance))
+            {
                 Debugger.LogWarning($"登録されている要求された型のインスタンスと渡されたインスタンスが一致しません：{type.Name}");
                 return;
             }
 
-            instances.Remove(type);
+            _instances.Remove(type);
         }
 
         /// <summary>
@@ -66,7 +70,7 @@ namespace Asterism
         /// <returns>指定された型のインスタンスがすでに登録されている場合は true を返します。</returns>
         public static bool IsRegistered<T>() where T : class
         {
-            return instances.ContainsKey(typeof(T));
+            return _instances.ContainsKey(typeof(T));
         }
 
         /// <summary>
@@ -79,7 +83,7 @@ namespace Asterism
         {
             var type = typeof(T);
 
-            return instances.ContainsKey(type) && Equals(instances[type], instance);
+            return _instances.ContainsKey(type) && Equals(_instances[type], instance);
         }
 
         /// <summary>
@@ -91,8 +95,9 @@ namespace Asterism
         {
             var type = typeof(T);
 
-            if (instances.ContainsKey(type)) {
-                return instances[type] as T;
+            if (_instances.ContainsKey(type))
+            {
+                return _instances[type] as T;
             }
 
             Debugger.LogError($"要求された型のインスタンスが登録されていません：{type.Name}");
@@ -109,7 +114,7 @@ namespace Asterism
         {
             var type = typeof(T);
 
-            instance = instances.ContainsKey(type) ? instances[type] as T : null;
+            instance = _instances.ContainsKey(type) ? _instances[type] as T : null;
 
             return instance != null;
         }

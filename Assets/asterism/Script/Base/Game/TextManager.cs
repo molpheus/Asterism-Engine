@@ -1,11 +1,14 @@
-using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
 using System.Linq;
+
+using Cysharp.Threading.Tasks;
+
 using UnityEngine;
 
 namespace Asterism.Engine
 {
     using Common;
+
     using Scriptable;
 
     public abstract class TextManager : EngineBase<TextManager>
@@ -42,19 +45,21 @@ namespace Asterism.Engine
             if (IsLoaded) return;
 
             StateLoaded = LoadState.Load;
-            if (LoadType == TextLoadType.Addressable) {
+            if (LoadType == TextLoadType.Addressable)
+            {
                 var list = await ResourceReciver.LoadTagAsync<TextTableScriptable>(LoadAddressableTag);
                 SettableData(list);
             }
-            else if (LoadType == TextLoadType.Resource) {
+            else if (LoadType == TextLoadType.Resource)
+            {
                 var resourceList = Resources.LoadAll(LoadAddressableTag, typeof(TextTableScriptable));
                 var list = new List<TextTableScriptable>();
-                foreach(TextTableScriptable textTableScriptable in resourceList)
+                foreach (TextTableScriptable textTableScriptable in resourceList)
                 {
                     list.Add(textTableScriptable);
                 }
                 SettableData(list);
-                
+
             }
         }
 
@@ -67,17 +72,20 @@ namespace Asterism.Engine
         public async UniTask<string> CurrentTextAsync(string key)
         {
             string value = "";
-            if (StateLoaded != LoadState.End) {
+            if (StateLoaded != LoadState.End)
+            {
                 await Initialized();
-                await UniTask.WaitWhile( () => StateLoaded != LoadState.End);
+                await UniTask.WaitWhile(() => StateLoaded != LoadState.End);
             }
 
             var current = tableList.Where(p => p.CountryCode == CurrentCountry).FirstOrDefault();
-            if (current != default(TextTableScriptable) && current.Data.Any( p => p.key == key)) {
+            if (current != default(TextTableScriptable) && current.Data.Any(p => p.key == key))
+            {
                 value = current.Data.Where(p => p.key == key).First().Value;
 
             }
-            else {
+            else
+            {
                 value = $"not set key, {key} :Check language file data {CurrentCountry}";
                 Debugger.LogWarning(value);
             }

@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -32,7 +31,8 @@ namespace Asterism.Common
 
         public override bool Equals(object obj)
         {
-            if (obj is not Enumeration otherValue) {
+            if (obj is not Enumeration otherValue)
+            {
                 return false;
             }
 

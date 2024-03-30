@@ -1,8 +1,8 @@
 using System;
 using System.Threading;
 
-using Cysharp.Threading;
 using Cysharp.Threading.Tasks;
+
 using UnityEngine;
 
 namespace Asterism
@@ -28,7 +28,8 @@ namespace Asterism
             Action<T> update = null,
             Action<T> finish = null,
             Action cancel = null
-        ) {
+        )
+        {
             T value = _value;
             T newValue = Add(addValue, true);
 

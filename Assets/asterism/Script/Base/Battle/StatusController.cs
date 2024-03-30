@@ -1,7 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 namespace Asterism.Battle
 {
     public abstract class StatusController<T, U> : StatusControllerBase

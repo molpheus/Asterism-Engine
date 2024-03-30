@@ -1,6 +1,5 @@
 using Cysharp.Threading.Tasks;
-using System.Collections;
-using System.Collections.Generic;
+
 using UnityEngine;
 using UnityEngine.Audio;
 
@@ -60,12 +59,14 @@ namespace Asterism.Audio
 
         public async UniTask Play(bool isAutoDelete, float fade = 0f)
         {
-            if (fade != 0f) {
+            if (fade != 0f)
+            {
                 var delta = 0f;
                 var v = _source.volume;
                 SetVolume(0f);
                 _source.Play();
-                while (delta <= fade) {
+                while (delta <= fade)
+                {
                     delta += Mathf.Clamp01(TimeScale switch {
                         TimeScaleType.Unscaled => Time.unscaledDeltaTime,
                         TimeScaleType.Fixed => Time.fixedDeltaTime,
@@ -78,11 +79,13 @@ namespace Asterism.Audio
                     await UniTask.Delay(1);
                 }
             }
-            else {
+            else
+            {
                 _source.Play();
             }
-            
-            if (!_source.loop) {
+
+            if (!_source.loop)
+            {
                 await UniTask.WaitWhile(() => _source.isPlaying);
                 if (isAutoDelete) Delete();
             }
@@ -90,16 +93,18 @@ namespace Asterism.Audio
 
         public async UniTask Stop(float fade = 0f)
         {
-            if (fade != 0) {
+            if (fade != 0)
+            {
                 var delta = 0f;
                 var v = _source.volume;
-                while(delta <= fade) {
-                    delta += Mathf.Clamp01( TimeScale switch {
+                while (delta <= fade)
+                {
+                    delta += Mathf.Clamp01(TimeScale switch {
                         TimeScaleType.Unscaled => Time.unscaledDeltaTime,
                         TimeScaleType.Fixed => Time.fixedDeltaTime,
                         TimeScaleType.Fixed_unscaled => Time.fixedUnscaledDeltaTime,
                         _ => Time.deltaTime,
-                    } );
+                    });
 
                     _source.volume = Mathf.Clamp(delta / fade, v, 0f);
 

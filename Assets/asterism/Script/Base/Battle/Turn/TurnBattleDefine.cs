@@ -1,7 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 namespace Asterism.Battle.Turn
 {
     public class TurnBattleData
@@ -12,7 +8,7 @@ namespace Asterism.Battle.Turn
 
     public class TurnBattleMainData : TurnBattleData
     {
-        
+
     }
 
     public class TurnBattleResultData : TurnBattleData

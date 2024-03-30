@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-using System.Runtime.CompilerServices;
 
 using UnityEngine;
 
@@ -8,7 +7,7 @@ namespace Asterism
 {
     public class Debugger : MonoBehaviour
     {
-        public static bool IsLogView { get; set;} = true;
+        public static bool IsLogView { get; set; } = true;
 
         /// <summary> ç≈ëÂÇÃÉçÉOï€éùêî </summary>
         private const int _maxLogStock = 100;
@@ -39,11 +38,10 @@ namespace Asterism
         /// </summary>
         public string LogString
         {
-            get
-            {
+            get {
                 string str = string.Empty;
                 var list = _logStock.ToArray();
-                foreach(Content content in list)
+                foreach (Content content in list)
                 {
                     str += content.Condition;
                     str += "\n";

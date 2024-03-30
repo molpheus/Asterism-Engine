@@ -1,8 +1,9 @@
+using Asterism.Audio;
+
 using Cysharp.Threading.Tasks;
+
 using UnityEngine;
 using UnityEngine.Audio;
-
-using Asterism.Audio;
 
 namespace Asterism.Engine
 {
@@ -45,7 +46,8 @@ namespace Asterism.Engine
         public async void PlayBGM(ISoundId soundData, float volume = 1f, float fade = 0f, bool isCrossFade = false)
         {
             Debugger.Log(soundData);
-            if (soundData != null) {
+            if (soundData != null)
+            {
                 AudioClip clip = await soundData.LoadAddressable();
                 _bgmController.SetMixer(GetMixerGroup(soundData.MixerGroupTag));
                 _bgmController.Play(clip, true, volume, fade, isCrossFade);
@@ -58,7 +60,8 @@ namespace Asterism.Engine
         /// <param name="soundData"></param>
         public async void PlaySE(ISoundId soundData)
         {
-            if (soundData != null) {
+            if (soundData != null)
+            {
                 AudioClip clip = await soundData.LoadAddressable();
                 var source = SoundSource.Create(transform);
                 source.SetClip(clip)

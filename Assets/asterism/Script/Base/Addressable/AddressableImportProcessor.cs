@@ -13,13 +13,14 @@ namespace Asterism.Addressable
     // https://yuumekou.net/addressable-asset-system-auto/
     public class AddressableImportProcessor : AssetPostprocessor
     {
-        static string AddressableResources {
+        static string AddressableResources
+        {
             get {
-                var data = (ConfigObject)AssetDatabase.FindAssets("t:ScriptableObject") // プロジェクトに存在する全ScriptableObjectのGUIDを取得
-               .Select(guid => AssetDatabase.GUIDToAssetPath(guid)) // GUIDをパスに変換
+                var data = (ConfigObject)AssetDatabase.FindAssets("t:ScriptableObject")
+               .Select(guid => AssetDatabase.GUIDToAssetPath(guid))
                .Where(path => path.IndexOf("asterism/Config/Config.asset") >= 0)
-               .Select(path => AssetDatabase.LoadAssetAtPath(path, typeof(ConfigObject))) // パスからPermanentDataの取得を試みる
-               .Where(obj => obj != null) // null要素は取り除く
+               .Select(path => AssetDatabase.LoadAssetAtPath(path, typeof(ConfigObject)))
+               .Where(obj => obj != null)
                .FirstOrDefault();
                 return data.AddressablePath;
             }
@@ -37,7 +38,8 @@ namespace Asterism.Addressable
         static void ImportAddressableAssets(AddressableAssetSettings settings, string[] assets)
         {
             bool isRegistered = false;
-            foreach (string asset in assets) {
+            foreach (string asset in assets)
+            {
                 if (!File.Exists(asset)) continue;
 
                 int folderNameIndex = asset.IndexOf(AddressableResources);
@@ -53,8 +55,9 @@ namespace Asterism.Addressable
                 AddressableAssetGroup group = settings.FindGroup(groupName);
                 if (group == null) group = CreateAddressableGroup(settings, groupName);
 
-                if (group == null) {
-                    Debugger.LogError($"グループの作成に失敗. {groupName}");
+                if (group == null)
+                {
+                    Debugger.LogError($"Failed to create group [{groupName}]");
                     continue;
                 }
 
@@ -68,7 +71,8 @@ namespace Asterism.Addressable
         static void DeleteAddressableAssets(AddressableAssetSettings settings, string[] assets)
         {
             bool isDeleted = false;
-            foreach (string asset in assets) {
+            foreach (string asset in assets)
+            {
                 if (!File.Exists(asset)) continue;
 
                 int folderNameindex = asset.IndexOf(AddressableResources);
@@ -96,7 +100,8 @@ namespace Asterism.Addressable
         static void RemoveOldAddressableAssets(AddressableAssetSettings settings, string[] movedAssets, string[] movedFromAssets)
         {
             bool isRemoved = false;
-            for (int i = 0; i < movedFromAssets.Length; i++) {
+            for (int i = 0; i < movedFromAssets.Length; i++)
+            {
                 if (!File.Exists(movedAssets[i])) continue;
 
                 if (movedFromAssets[i].IndexOf(AddressableResources) < 0) continue;

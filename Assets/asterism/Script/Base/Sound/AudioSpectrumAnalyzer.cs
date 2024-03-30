@@ -1,8 +1,7 @@
-using UnityEngine;
-using System.Linq;
-using Cysharp.Threading.Tasks;
-using UnityEngine.Events;
 using System.Collections.Generic;
+
+using UnityEngine;
+using UnityEngine.Events;
 
 namespace Asterism.Audio
 {
@@ -52,7 +51,7 @@ namespace Asterism.Audio
                     splits[i] = div;
                 }
                 var rem = num % Partial;
-                for(int i = 0; i < rem; i++)
+                for (int i = 0; i < rem; i++)
                 {
                     splits[i] += 1;
                 }
@@ -121,9 +120,9 @@ namespace Asterism.Audio
 
                 var m = max - min;
                 var s = max / split;
-                
+
                 list[0] = split == 1 ? max : min;
-                for(int i = 1; i < split; i++)
+                for (int i = 1; i < split; i++)
                 {
                     list[i] = (i * s) + min;
                 }
@@ -241,7 +240,7 @@ namespace Asterism.Audio
         /// <param name="set"></param>
         public void SetThresholdPreset(Preset set)
         {
-            switch(set)
+            switch (set)
             {
                 case Preset.Type1:
                 SetThreshold(60, 250, 500, 2000, 4000, 6000, 20000, 24000);

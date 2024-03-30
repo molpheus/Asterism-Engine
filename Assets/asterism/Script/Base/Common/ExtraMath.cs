@@ -1,7 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 namespace Asterism
 {
     public class ExtraMath
@@ -13,10 +9,12 @@ namespace Asterism
         /// <returns></returns>
         public static bool IsPowerOfTwo(int value)
         {
-            if (value <= 0) {
+            if (value <= 0)
+            {
                 return false;
             }
-            else {
+            else
+            {
                 return (value & (value - 1)) == 0;
             }
         }

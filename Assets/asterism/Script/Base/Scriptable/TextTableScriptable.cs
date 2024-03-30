@@ -1,5 +1,5 @@
-using System.Collections;
 using System.Collections.Generic;
+
 using UnityEngine;
 
 namespace Asterism.Scriptable
@@ -20,5 +20,5 @@ namespace Asterism.Scriptable
         public List<TextData> Data;
     }
 
-    
+
 }
