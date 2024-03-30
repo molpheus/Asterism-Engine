@@ -1,8 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-
-using UnityEditor.Hardware;
-
 using UnityEngine;
 
 namespace Asterism.Engine
