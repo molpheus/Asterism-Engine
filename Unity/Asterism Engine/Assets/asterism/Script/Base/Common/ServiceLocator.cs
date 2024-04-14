@@ -87,7 +87,7 @@ namespace Asterism
         }
 
         /// <summary>
-        /// インスタンスを取得します。取得できなかった場合はエラーになります。
+        /// インスタンスを取得します。
         /// </summary>
         /// <typeparam name="T">取得したいインスタンスの型。</typeparam>
         /// <returns>取得したインスタンスを返します。取得できなかった場合は null を返します。</returns>
@@ -105,7 +105,7 @@ namespace Asterism
         }
 
         /// <summary>
-        /// インスタンスを取得し、渡された引数に代入します。取得できなかった場合は null が入ります。
+        /// インスタンスを取得し、渡された引数に代入します。
         /// </summary>
         /// <param name="instance">取得したインスタンスを入れる変数。</param>
         /// <typeparam name="T">取得したいインスタンスの型。</typeparam>
