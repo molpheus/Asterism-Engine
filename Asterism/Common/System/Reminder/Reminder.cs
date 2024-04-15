@@ -77,22 +77,13 @@ namespace Asterism.System.Reminder
             return new Unsubscriber(_observers, observer);
         }
 
-        private class Unsubscriber : IDisposable
+        private class Unsubscriber(List<IObserver<RemindData>> observers, IObserver<RemindData> observer) : IDisposable
         {
-            private List<IObserver<RemindData>> _observers;
-            private IObserver<RemindData> _observer;
-
-            public Unsubscriber(List<IObserver<RemindData>> observers, IObserver<RemindData> observer)
+            void IDisposable.Dispose()
             {
-                _observers = observers;
-                _observer = observer;
-            }
-
-            public void Dispose()
-            {
-                if (_observer != null && _observers.Contains(_observer))
+                if (observer != null && observers.Contains(observer))
                 {
-                    _observers.Remove(_observer);
+                    observers.Remove(observer);
                 }
             }
         }
