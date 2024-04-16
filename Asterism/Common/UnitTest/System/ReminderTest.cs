@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Reactive.Linq;
-using System.Threading;
 
-using Asterism.Common;
 using Asterism.Common.Extension;
 using Asterism.System.Reminder;
 
