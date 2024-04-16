@@ -81,7 +81,7 @@ namespace Asterism.System.Reminder
         {
             void IDisposable.Dispose()
             {
-                if (observer != null && observers.Contains(_observer))
+                if (observer != null && observers.Contains(observer))
                 {
                     observers.Remove(observer);
                 }
