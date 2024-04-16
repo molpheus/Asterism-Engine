@@ -3,20 +3,17 @@ using System.Collections.Generic;
 using System.IO;
 
 using Asterism.Common;
+using Asterism.Common.Extension;
 
 namespace Asterism.System.Reminder
 {
-    public partial class Reminder
+    public partial class Reminder : IObservable<RemindData>, INullable<Reminder>, IFileSave
     {
-        public const string FileName = "reminder.dat";
+        public const string FileName = "reminder.xml";
         protected List<RemindData> _remindList = new List<RemindData>();
         public int Count => _remindList.Count;
         public RemindData this[int index] => _remindList[index];
-    }
 
-
-    public partial class Reminder
-    {        
         protected string _retentionPath;
 
         public Reminder()
@@ -29,14 +26,12 @@ namespace Asterism.System.Reminder
         {
             _retentionPath = Path.Combine(retentionDirectory, FileName);
         }
-    }
 
-
-    public partial class Reminder
-    {
-        public void Add(DateTime time, string message) => Add(new RemindData(time, message));
-        public void Add(RemindData remindData) => _remindList.Add(remindData);
-        public void Remove(DateTime time) => _remindList.RemoveAll(x => x.Time == time);
+        public bool Add(DateTime time, string message) => _remindList.TryAdd(new RemindData(time, message));
+        public bool Add(RemindData remindData) => _remindList.TryAdd(remindData);
+        public bool AddList(params RemindData[] remindData) => _remindList.TryAdd(remindData);
+        public bool Get(int index, out RemindData remindData) => _remindList.TryGet(index, out remindData);
+        public bool Remove(DateTime time) => _remindList.RemoveAll(x => x.Time == time) is not 0;
         public void RemoveAll() => _remindList.Clear();
 
         public void Update()
@@ -54,18 +49,12 @@ namespace Asterism.System.Reminder
 
             removeList.ForEach(x => _remindList.Remove(x));
         }
-    }
 
-    public partial class Reminder : IFileSave
-    {
         public void Save() => this.Save(_retentionPath, _remindList);
         public void Load() => _remindList = this.Load<List<RemindData>>(_retentionPath);
         public bool CheckFile() => File.Exists(_retentionPath);
         public void DeleteFile() => File.Delete(_retentionPath);
-    }
-
-    public partial class Reminder : IObservable<RemindData>
-    {
+    
         private List<IObserver<RemindData>> _observers = new List<IObserver<RemindData>>();
 
         public IDisposable Subscribe(IObserver<RemindData> observer)
