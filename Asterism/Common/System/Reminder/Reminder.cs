@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 
 using Asterism.Common;
+using Asterism.Common.Extension;
 
 namespace Asterism.System.Reminder
 {
@@ -34,9 +35,11 @@ namespace Asterism.System.Reminder
 
     public partial class Reminder
     {
-        public void Add(DateTime time, string message) => Add(new RemindData(time, message));
-        public void Add(RemindData remindData) => _remindList.Add(remindData);
-        public void Remove(DateTime time) => _remindList.RemoveAll(x => x.Time == time);
+        public bool Add(DateTime time, string message) => Add(new RemindData(time, message));
+        public bool Add(RemindData remindData) => AddList([remindData]);
+        public bool AddList(params RemindData[] remindData) => _remindList.TryAdd(remindData);
+        public void Get(ref RemindData remindData) => _remindList.TryGetOrAdd(0, ref remindData);
+        public bool Remove(DateTime time) => _remindList.RemoveAll(x => x.Time == time) is not 0;
         public void RemoveAll() => _remindList.Clear();
 
         public void Update()
