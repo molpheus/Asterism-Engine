@@ -8,11 +8,6 @@ namespace Asterism.Common.Extension
 {
     static public class ListExtension
     {
-        public static bool DefaultIsEmpty<T>(this IEnumerable<T> list)
-        {
-            return list.Count() is 0;
-        }
-
         public static bool TryAdd<T>(this ICollection<T> list, T item)
         {
             if (item is null)
