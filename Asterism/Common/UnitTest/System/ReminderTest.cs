@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Reactive.Linq;
+using System.Threading;
+
 using Asterism.Common;
+using Asterism.Common.Extension;
 using Asterism.System.Reminder;
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -44,8 +47,39 @@ namespace UnitTest.System
         public void TestAdd_Nullが代入された()
         {
             var reminder = new Reminder();
-            bool isResult = reminder.TryAdd(null);
+            reminder.Add(null);
+            Assert.AreEqual(0, reminder.Count);
+        }
+
+        [TestMethod]
+        public void TestAdd_重複()
+        {
+            var reminder = new Reminder();
+            reminder.Add(DateTime.Now, "Test");
+            bool isResult = reminder.Add(DateTime.Now, "Test");
             Assert.AreEqual(false, isResult);
+        }
+
+        #endregion
+
+        #region Get
+        [TestMethod]
+        public void TestGet()
+        {
+            var reminder = new Reminder();
+            reminder.Add(DateTime.Now, "Test");
+            bool isResult = reminder.Get(0, out var remindData);
+            Assert.AreEqual(true, isResult);
+            Assert.AreEqual("Test", remindData.Message);
+        }
+
+        [TestMethod]
+        public void TestGet_取得失敗()
+        {
+            var reminder = new Reminder();
+            bool isResult = reminder.Get(0, out var remindData);
+            Assert.AreEqual(false, isResult);
+            Assert.AreEqual(true, remindData.IsNullOrDefault());
         }
 
         #endregion
@@ -55,18 +89,27 @@ namespace UnitTest.System
         {
             var reminder = new Reminder();
             var currentTime = DateTime.Now;
-            reminder.TryAdd(currentTime, "Test");
-            reminder.TryAdd(currentTime.AddMinutes(1), "Test");
-            reminder.TryAdd(currentTime.AddMinutes(2), "Test");
+            reminder.Add(currentTime, "Test");
+            reminder.Add(currentTime.AddMinutes(1), "Test");
+            reminder.Add(currentTime.AddMinutes(2), "Test");
             reminder.Remove(currentTime);
             Assert.AreEqual(2, reminder.Count);
+        }
+
+        [TestMethod]
+        public void TestRemove_削除項目なし()
+        {
+            var reminder = new Reminder();
+            reminder.Add(DateTime.Now, "Test");
+            bool isResult = reminder.Remove(DateTime.Now.AddMinutes(1));
+            Assert.AreEqual(false, isResult);
         }
 
         [TestMethod]
         public void TestUpdate()
         {
             var reminder = new Reminder();
-            reminder.TryAdd(DateTime.Now.AddSeconds(-1), "Test");
+            reminder.Add(DateTime.Now.AddSeconds(-1), "Test");
             reminder.Update();
             Assert.AreEqual(0, reminder.Count);
         }
@@ -76,7 +119,7 @@ namespace UnitTest.System
         {
             var reminder = new Reminder();
             reminder.DeleteFile();
-            reminder.TryAdd(DateTime.Now, "Test");
+            reminder.Add(DateTime.Now, "Test");
             reminder.Save();
             Assert.AreEqual(true, reminder.CheckFile());
         }
@@ -86,7 +129,7 @@ namespace UnitTest.System
         {
             var reminder = new Reminder();
             reminder.DeleteFile();
-            reminder.TryAdd(DateTime.Now, "Test");
+            reminder.Add(DateTime.Now, "Test");
             reminder.Save();
             reminder.RemoveAll();
 
@@ -107,21 +150,12 @@ namespace UnitTest.System
         {
             var reminder = new Reminder();
             var currentTime = DateTime.Now;
-            reminder.TryAdd(currentTime, "Test");
+            reminder.Add(currentTime, "Test");
             var isUpdated = false;
             var disposable = reminder.Subscribe(_ => { isUpdated = true; });
             reminder.Update();
             disposable.Dispose();
             Assert.AreEqual(true, isUpdated);
-        }
-
-        [TestMethod]
-        public void TestRemove_削除項目なし()
-        {
-            var reminder = new Reminder();
-            reminder.TryAdd(DateTime.Now, "Test");
-            bool isResult = reminder.Remove(DateTime.Now.AddMinutes(1));
-            Assert.AreEqual(false, isResult);
         }
     }
 }

@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="Common\AppException.cs" />
     <Compile Include="Common\Enumeration.cs" />
+    <Compile Include="Common\Extension\Extension.cs" />
     <Compile Include="Common\Extension\ListExtension.cs" />
     <Compile Include="Common\FileSave.cs" />
     <Compile Include="Common\NumVariable.cs" />
