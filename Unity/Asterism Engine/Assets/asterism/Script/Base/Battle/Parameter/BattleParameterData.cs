@@ -1,5 +1,7 @@
 using System.Collections.Generic;
 
+using Asterism.Common;
+
 namespace Asterism.Battle
 {
     public interface IActionData

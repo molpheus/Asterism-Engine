@@ -7,7 +7,7 @@ namespace Asterism
         {
             public string MixerName { get; }
 
-            public MixerGroup(int id, string name, string mixerName) : base(id, name)
+            public MixerGroup(int id, string name, string mixerName) : base(name, id)
             {
                 MixerName = mixerName;
             }

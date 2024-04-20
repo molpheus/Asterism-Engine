@@ -8,7 +8,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Asterism</RootNamespace>
-    <AssemblyName>Asterism</AssemblyName>
+    <AssemblyName>AsterismCore</AssemblyName>
     <TargetFrameworkVersion>v4.8.1</TargetFrameworkVersion>
     <LangVersion>12.0</LangVersion>
     <FileAlignment>512</FileAlignment>
@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\AppException.cs" />
+    <Compile Include="Common\Disposable.cs" />
     <Compile Include="Common\Enumeration.cs" />
     <Compile Include="Common\Extension\Extension.cs" />
     <Compile Include="Common\Extension\ListExtension.cs" />

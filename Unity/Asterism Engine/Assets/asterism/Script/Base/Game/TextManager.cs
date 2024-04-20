@@ -1,16 +1,15 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
 using Cysharp.Threading.Tasks;
 
 using UnityEngine;
+using Asterism.Common;
+using Asterism.Scriptable;
 
 namespace Asterism.Engine
 {
-    using Common;
-
-    using Scriptable;
-
     public abstract class TextManager : EngineBase<TextManager>
     {
         public enum TextLoadType
@@ -24,7 +23,7 @@ namespace Asterism.Engine
 
         protected List<TextTableScriptable> tableList;
 
-        [System.NonSerialized]
+        [NonSerialized]
         public LoadState StateLoaded = LoadState.None;
         /// <summary> –|–óƒŠƒXƒg“Ç‚İ‚İ </summary>
         public bool IsLoaded { get { return StateLoaded != LoadState.None; } }

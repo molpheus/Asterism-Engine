@@ -3,6 +3,8 @@ using System.Collections;
 
 using UnityEngine;
 
+using ServiceLocator = Asterism.Common.ServiceLocator;
+
 namespace Asterism
 {
     public class Debugger : MonoBehaviour

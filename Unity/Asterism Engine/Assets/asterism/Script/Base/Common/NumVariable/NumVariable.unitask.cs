@@ -5,10 +5,12 @@ using Cysharp.Threading.Tasks;
 
 using UnityEngine;
 
-namespace Asterism
+namespace Asterism.Common
 {
-    public partial class NumVariable<T>
-        where T : struct, IComparable, IFormattable, IConvertible, IComparable<T>, IEquatable<T>
+    /// <summary>
+    /// Asterism.Common.NumVariableのUniTask拡張
+    /// </summary>
+    public static class NumVariableUniTaskExtension
     {
         /// <summary>
         /// UniTaskで徐々に数値に足すようにする
@@ -20,7 +22,8 @@ namespace Asterism
         /// <param name="update">更新タイミングでの呼び出し</param>
         /// <param name="finish">完了タイミングでの呼び出し</param>
         /// <param name="cancel">キャンセルされたら呼び出し</param>
-        public async UniTask AnimatedAdd(
+        public static async UniTask AnimatedAdd<T>(
+            this NumVariable<T> numVariable,
             T addValue,
             float speed = 1f,
             PlayerLoopTiming loopTiming = PlayerLoopTiming.Update,
@@ -28,10 +31,10 @@ namespace Asterism
             Action<T> update = null,
             Action<T> finish = null,
             Action cancel = null
-        )
+        ) where T : struct, IComparable, IFormattable, IConvertible, IComparable<T>, IEquatable<T>
         {
-            T value = _value;
-            T newValue = Add(addValue, true);
+            T value = numVariable.Value;
+            T newValue = numVariable.Add(addValue, true);
 
             float delta = 0f;
             while (delta < 1f)
@@ -44,12 +47,12 @@ namespace Asterism
                 await UniTask.DelayFrame(1, loopTiming, cancellationToken);
             }
 
-            _value = newValue;
+            numVariable.SetValue(newValue);
 
             if (cancellationToken.IsCancellationRequested)
                 cancel?.Invoke();
             else
-                finish?.Invoke(_value);
+                finish?.Invoke(numVariable.Value);  
         }
 
         /// <summary>
@@ -62,7 +65,8 @@ namespace Asterism
         /// <param name="update">更新タイミングでの呼び出し</param>
         /// <param name="finish">完了タイミングでの呼び出し</param>
         /// <param name="cancel">キャンセルされたら呼び出し</param>
-        public async UniTask AnimatedSub(
+        public static async UniTask AnimatedSub<T>(
+            this NumVariable<T> numVariable,
             T addValue,
             float speed = 1f,
             PlayerLoopTiming loopTiming = PlayerLoopTiming.Update,
@@ -70,10 +74,10 @@ namespace Asterism
             Action<T> update = null,
             Action<T> finish = null,
             Action cancel = null
-        )
+        ) where T : struct, IComparable, IFormattable, IConvertible, IComparable<T>, IEquatable<T>
         {
-            T value = _value;
-            T newValue = Sub(addValue, true);
+            T value = numVariable.Value;
+            T newValue = numVariable.Sub(addValue, true);
 
             float delta = 0f;
             while (delta < 1f)
@@ -85,13 +89,12 @@ namespace Asterism
                 update?.Invoke(v);
                 await UniTask.DelayFrame(1, loopTiming, cancellationToken);
             }
-
-            _value = newValue;
+            numVariable.SetValue(newValue);
 
             if (cancellationToken.IsCancellationRequested)
                 cancel?.Invoke();
             else
-                finish?.Invoke(_value);
+                finish?.Invoke(numVariable.Value);
         }
     }
 }

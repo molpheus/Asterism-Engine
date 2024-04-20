@@ -1,16 +1,17 @@
+using System;
 using System.Collections.Generic;
 
 using UnityEngine;
 
+using Asterism.Common;
+
 namespace Asterism.Scriptable
 {
-    using Common;
-
     [CreateAssetMenu(fileName = "textData", menuName = "Asterism/ScriptableObjects/TextData")]
     public class TextTableScriptable : ScriptableObject
     {
         public CountryCode CountryCode = 0;
-        [System.Serializable]
+        [Serializable]
         public struct TextData
         {
             public string key;

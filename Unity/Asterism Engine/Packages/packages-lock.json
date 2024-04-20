@@ -7,16 +7,6 @@
       "dependencies": {},
       "hash": "e6240879c455fb69ea8d05ad6612f41bf86496ca"
     },
-    "com.molmolgames.asterism.ui": {
-      "version": "https://github.com/molpheus/UIToolKit-Runtime-Extension.git?path=/Assets/asterism",
-      "depth": 0,
-      "source": "git",
-      "dependencies": {
-        "com.unity.addressables": "1.21.12",
-        "com.cysharp.unitask": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask"
-      },
-      "hash": "6fc5e2ee870025bd81a95104ee9b7677cb9d984f"
-    },
     "com.unity.2d.animation": {
       "version": "10.1.1",
       "depth": 1,

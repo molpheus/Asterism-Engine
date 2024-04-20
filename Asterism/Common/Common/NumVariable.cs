@@ -91,5 +91,8 @@ namespace Asterism.Common
         /// </summary>
         public float Progress()
             => (dynamic)_value == 0 ? 0 : (dynamic)_value / (dynamic)_maxValue;
+
+        public void SetValue(T value)
+            => _value = value;
     }
 }

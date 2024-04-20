@@ -1,7 +1,6 @@
 {
   "dependencies": {
     "com.cysharp.unitask": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask",
-    "com.molmolgames.asterism.ui": "https://github.com/molpheus/UIToolKit-Runtime-Extension.git?path=/Assets/asterism",
     "com.unity.addressables": "1.21.20",
     "com.unity.ai.navigation": "2.0.0",
     "com.unity.cinemachine": "2.9.7",

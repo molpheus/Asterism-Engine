@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 using Cysharp.Threading.Tasks;
@@ -6,29 +7,27 @@ using UnityEngine;
 
 namespace Asterism.Battle
 {
-    public abstract class BattleSystem : MonoBehaviour
+    public abstract class BattleSystem
     {
         /// <summary> シングルトン </summary>
-        public static BattleSystem I => _I;
-        /// <summary> シングルトン </summary>
-        private static BattleSystem _I = null;
+        public static BattleSystem I { get; private set; } = null;
 
         /// <summary> 現在のステータス </summary>
         public MainStatus mainStatus { get; private set; }
 
         /// <summary> コントローラリスト </summary>
-        private Dictionary<MainStatus, StatusControllerBase> controllerList = new Dictionary<MainStatus, StatusControllerBase>();
+        private Dictionary<MainStatus, StatusControllerBase> _controllerList = new Dictionary<MainStatus, StatusControllerBase>();
 
         private void Awake ()
         {
-            if (_I == null) {
-                _I = this;
+            if (I == null) {
+                I = this;
             }
         }
 
         private void OnDestroy()
         {
-            if (_I == this) {
+            if (I == this) {
 
             }
         }
@@ -38,12 +37,12 @@ namespace Asterism.Battle
         /// </summary>
         public void AllClearController()
         {
-            foreach (var str in System.Enum.GetNames(typeof(MainStatus))) {
-                var e = (MainStatus)System.Enum.Parse(typeof(MainStatus), str);
+            foreach (var str in Enum.GetNames(typeof(MainStatus))) {
+                var e = (MainStatus)Enum.Parse(typeof(MainStatus), str);
                 ClearController(e);
             }
 
-            controllerList.Clear();
+            _controllerList.Clear();
         }
 
         /// <summary>
@@ -52,9 +51,9 @@ namespace Asterism.Battle
         /// <param name="status"></param>
         public void ClearController(MainStatus status)
         {
-            if (controllerList.ContainsKey(status)) {
-                controllerList[status].Close();
-                controllerList.Remove(status);
+            if (_controllerList.ContainsKey(status)) {
+                _controllerList[status].Close();
+                _controllerList.Remove(status);
             }
         }
 
@@ -65,11 +64,11 @@ namespace Asterism.Battle
         /// <param name="controller"></param>
         public void SetController(MainStatus status, StatusControllerBase controller)
         {
-            if (controllerList.ContainsKey(status)) {
-                controllerList[status] = controller;
+            if (_controllerList.ContainsKey(status)) {
+                _controllerList[status] = controller;
             }
             else {
-                controllerList.Add(status, controller);
+                _controllerList.Add(status, controller);
             }
         }
 
@@ -81,13 +80,13 @@ namespace Asterism.Battle
         {
             mainStatus = MainStatus.Start;
             object obj = null;
-            foreach(var str in System.Enum.GetNames(typeof(MainStatus))) {
-                var e = (MainStatus)System.Enum.Parse(typeof(MainStatus), str);
+            foreach(var str in Enum.GetNames(typeof(MainStatus))) {
+                var e = (MainStatus)Enum.Parse(typeof(MainStatus), str);
 
-                if (controllerList.ContainsKey(e)) {
-                    await controllerList[e].OnStart(obj);
-                    await UniTask.WaitWhile(() => !controllerList[e].isEndAction);
-                    obj = controllerList[e].NextStatusObject();
+                if (_controllerList.ContainsKey(e)) {
+                    await _controllerList[e].OnStart(obj);
+                    await UniTask.WaitWhile(() => !_controllerList[e].isEndAction);
+                    obj = _controllerList[e].NextStatusObject();
                 }
             }
         }

@@ -101,4 +101,5 @@ namespace Asterism.Common
             return instance != null;
         }
     }
+
 }

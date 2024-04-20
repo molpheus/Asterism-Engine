@@ -1,4 +1,5 @@
 using UnityEngine;
+using ServiceLocator = Asterism.Common.ServiceLocator;
 
 namespace Asterism.Engine
 {

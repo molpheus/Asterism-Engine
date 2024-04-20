@@ -1,5 +1,7 @@
 using System;
 
+using Asterism.Common;
+
 namespace Asterism
 {
     public abstract class Locator : IDisposable

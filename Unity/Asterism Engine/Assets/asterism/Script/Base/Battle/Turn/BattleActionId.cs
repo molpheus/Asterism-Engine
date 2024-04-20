@@ -4,7 +4,7 @@ namespace Asterism.Battle.Turn
 {
     public abstract class BattleActionId : Enumeration
     {
-        public BattleActionId(int id, string name) : base(id, name)
+        public BattleActionId(int id, string name) : base(name, id)
         {
 
         }

@@ -8,7 +8,7 @@ namespace Asterism
             public string Path { get; }
             public string MixerGroupTag { get; }
             public string LabelPath { get; }
-            protected SoundId(int id, string name, string path, string labelName, string mixerGroupTag = "") : base(id, name)
+            protected SoundId(int id, string name, string path, string labelName, string mixerGroupTag = "") : base(name, id)
             {
                 LabelPath = labelName;
                 Path = path;
