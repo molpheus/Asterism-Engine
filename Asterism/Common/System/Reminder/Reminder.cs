@@ -50,8 +50,8 @@ namespace Asterism.System.Reminder
             removeList.ForEach(x => _remindList.Remove(x));
         }
 
-        public void Save() => this.Save(_retentionPath, _remindList);
-        public void Load() => _remindList = this.Load<List<RemindData>>(_retentionPath);
+        public bool Save() => this.TrySave(_retentionPath, _remindList);
+        public bool Load() => this.TryLoad(_retentionPath, out _remindList);
         public bool CheckFile() => File.Exists(_retentionPath);
         public void DeleteFile() => File.Delete(_retentionPath);
     
