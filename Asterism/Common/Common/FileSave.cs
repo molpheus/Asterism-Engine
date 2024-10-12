@@ -7,6 +7,12 @@ namespace Asterism.Common
 {
     public static class FileSave
     {
+        /// <summary>
+        /// 指定のデータをファイルに保存する
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="fileSave"></param>
+        /// <param name="data"></param>
         public static void Save<T>(this IFileSave fileSave, T data)
         {
             XmlSerializer serializer = new XmlSerializer(typeof(T));
@@ -55,5 +61,10 @@ namespace Asterism.Common
     public interface IFileSave
     {
         string FilePath { get; }
+
+        public bool Save();
+        public bool Load();
+        public bool CheckFile();
+        public void DeleteFile();
     }
 }

@@ -17,6 +17,16 @@ namespace UnitTest.Common
             {
                 FilePath = filePath;
             }
+
+            // 以下はインターフェース継承先で呼び出しをする際に利用されるので今回のテストでは利用されない
+            bool IFileSave.Save()
+                => throw new global::System.NotImplementedException();
+            public bool Load()
+                => throw new global::System.NotImplementedException();
+            public bool CheckFile()
+                => throw new global::System.NotImplementedException();
+            public void DeleteFile()
+                => throw new global::System.NotImplementedException();
         }
 
         public class SaveData

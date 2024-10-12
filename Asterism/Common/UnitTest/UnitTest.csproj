@@ -43,6 +43,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Common\Crypt\AESTest.cs" />
     <Compile Include="Common\SaveTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="System\ReminderTest.cs" />

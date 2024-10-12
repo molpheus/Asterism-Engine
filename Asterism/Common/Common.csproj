@@ -50,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\AppException.cs" />
+    <Compile Include="Common\Crypt\AES.cs" />
     <Compile Include="Common\Disposable.cs" />
     <Compile Include="Common\Enumeration.cs" />
     <Compile Include="Common\Extension\Extension.cs" />
