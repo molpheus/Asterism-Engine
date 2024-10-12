@@ -9,9 +9,12 @@ namespace Asterism.System.Reminder
 {
     public partial class Reminder : IObservable<RemindData>, INullable<Reminder>, IFileSave
     {
+        public string FilePath { get; }
+
         public const string FileName = "reminder.xml";
         protected List<RemindData> _remindList = new List<RemindData>();
         public int Count => _remindList.Count;
+
         public RemindData this[int index] => _remindList[index];
 
         protected string _retentionPath;
@@ -19,12 +22,12 @@ namespace Asterism.System.Reminder
         public Reminder()
         {
             var currentDirectory = Directory.GetCurrentDirectory();
-            _retentionPath = Path.Combine(currentDirectory, FileName);
+            FilePath = Path.Combine(currentDirectory, FileName);
         }
 
         public Reminder(string retentionDirectory)
         {
-            _retentionPath = Path.Combine(retentionDirectory, FileName);
+            FilePath = Path.Combine(retentionDirectory, FileName);
         }
 
         public bool Add(DateTime time, string message) => _remindList.TryAdd(new RemindData(time, message));
@@ -50,10 +53,10 @@ namespace Asterism.System.Reminder
             removeList.ForEach(x => _remindList.Remove(x));
         }
 
-        public bool Save() => this.TrySave(_retentionPath, _remindList);
-        public bool Load() => this.TryLoad(_retentionPath, out _remindList);
-        public bool CheckFile() => File.Exists(_retentionPath);
-        public void DeleteFile() => File.Delete(_retentionPath);
+        public bool Save() => this.TrySave(_remindList);
+        public bool Load() => this.TryLoad(out _remindList);
+        public bool CheckFile() => this.Exists();
+        public void DeleteFile() => this.Delete();
     
         private List<IObserver<RemindData>> _observers = new List<IObserver<RemindData>>();
 
