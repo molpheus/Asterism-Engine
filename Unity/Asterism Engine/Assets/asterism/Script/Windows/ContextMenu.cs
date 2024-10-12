@@ -9,6 +9,9 @@ namespace Asterism.Windows
 {
     public class ContextMenu : MonoBehaviour
     {
+        private const uint TPM_LEFTALIGN = 0x0000;
+        private const uint TPM_RETURNCMD = 0x0100;
+
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         private static extern IntPtr CreatePopupMenu();
 
@@ -39,7 +42,7 @@ namespace Asterism.Windows
              * y : Screen.height - mousePosition.y
              * */
 
-            return TrackPopupMenuEx(hMenu, 0x0000, (int)screenPoint.x, (int)screenPoint.y, GetForegroundWindow(), IntPtr.Zero);
+            return TrackPopupMenuEx(hMenu, TPM_LEFTALIGN | TPM_RETURNCMD, (int)screenPoint.x, (int)screenPoint.y, GetForegroundWindow(), IntPtr.Zero);
         }
 
 
@@ -59,8 +62,10 @@ namespace Asterism.Windows
                     popup.SetMenu(CreateMenuPtr(popup.items));
                     AppendMenu(hMenu, item.uFlags, popup.hMenu, item.lpNewItem);
                 }
-
-                AppendMenu(hMenu, item.uFlags, item.uId, item.lpNewItem);
+                else
+                {
+                    AppendMenu(hMenu, item.uFlags, item.uId, item.lpNewItem);
+                }
             }
 
             return hMenu;
