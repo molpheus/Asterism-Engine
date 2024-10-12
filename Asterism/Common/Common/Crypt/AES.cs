@@ -7,7 +7,7 @@ using System.Security.Cryptography;
 
 namespace Asterism.Common.Crypt
 {
-    public class AES
+    public sealed class AES
     {
         public enum BlockSize
         {

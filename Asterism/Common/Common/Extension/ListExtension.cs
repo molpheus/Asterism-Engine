@@ -52,6 +52,15 @@ namespace Asterism.Common.Extension
             return true;
         }
 
+        public static bool TryRemoveAt<T>(this ICollection<T> list, int index)
+        {
+            if (index < 0 || index >= list.Count)
+                return false;
+
+            list.Remove(list.ElementAt(index));
+            return true;
+        }
+
         public static bool TryGet<T>(this IList<T> list, int index, out T result)
         {
             result = default;

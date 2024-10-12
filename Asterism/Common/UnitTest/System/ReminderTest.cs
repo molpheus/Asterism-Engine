@@ -108,7 +108,7 @@ namespace UnitTest.System
         {
             var reminder = new Reminder();
             reminder.Add(DateTime.Now.AddSeconds(-1), "Test");
-            reminder.Update();
+            reminder.Update(DateTime.Now);
             Assert.AreEqual(0, reminder.Count);
         }
 
@@ -151,7 +151,7 @@ namespace UnitTest.System
             reminder.Add(currentTime, "Test");
             var isUpdated = false;
             var disposable = reminder.Subscribe(_ => { isUpdated = true; });
-            reminder.Update();
+            reminder.Update(DateTime.Now);
             disposable.Dispose();
             Assert.AreEqual(true, isUpdated);
         }

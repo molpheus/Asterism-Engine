@@ -59,6 +59,8 @@
     <Compile Include="Common\NumVariable.cs" />
     <Compile Include="Common\ServiceLocator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="System\Cron\Cron.cs" />
+    <Compile Include="System\Cron\CronSchedule.cs" />
     <Compile Include="System\Reminder\RemindData.cs" />
     <Compile Include="System\Reminder\Reminder.cs" />
   </ItemGroup>

@@ -36,10 +36,10 @@ namespace Asterism.System.Reminder
         public bool Get(int index, out RemindData remindData) => _remindList.TryGet(index, out remindData);
         public bool Remove(DateTime time) => _remindList.RemoveAll(x => x.Time == time) is not 0;
         public void RemoveAll() => _remindList.Clear();
+        public void RemoveAt(int index) => _remindList.RemoveAt(index);
 
-        public void Update()
+        public void Update(DateTime now)
         {
-            var now = DateTime.Now;
             var removeList = new List<RemindData>();
             foreach (var remind in _remindList)
             {
