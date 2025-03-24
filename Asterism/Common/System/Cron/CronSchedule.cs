@@ -1,24 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlTypes;
+using System.IO;
 using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
 
 using Asterism.Common;
 using Asterism.Common.Extension;
 
-namespace Asterism.System
+namespace Asterism.System.Cron
 {
-    public partial class CronSchedule : IObservable<Cron>, INullable<CronSchedule>,  IFileSave
+    public partial class CronSchedule
     {
-        public string FilePath { get; }
         public const string FileName = "cron.xml";
 
-        protected List<Cron> _cronList = new List<Cron>();
+        protected List<CronExpression> _cronList = null;
         public int Count => _cronList.Count;
-        private List<IObserver<Cron>> _observers = new List<IObserver<Cron>>();
+        private List<IObserver<CronExpression>> _observers = null;
+        
+        public CronSchedule(string filePath = null)
+        {
+            _cronList = new List<CronExpression>();
+            _observers = new List<IObserver<CronExpression>>();
+            filePath ??= Directory.GetCurrentDirectory();
+            FilePath = Path.Combine(filePath, FileName);
+        }
+    }
+
+    public partial class CronSchedule : IScheduledUpdatable
+    {
         public void Update(DateTime now)
         {
             foreach (var cron in _cronList)
@@ -29,35 +37,70 @@ namespace Asterism.System
                 }
             }
         }
+    }
 
-        public bool Add(string minute, string hour, string day, string month, string week) => _cronList.TryAdd(new Cron(minute, hour, day, month, week));
-        public bool Add(Cron cron) => _cronList.TryAdd(cron);
-        public bool AddList(params Cron[] cron) => _cronList.TryAdd(cron);
-        public bool Get(int index, out Cron cron) => _cronList.TryGet(index, out cron);
-        public bool Remove(string minute, string hour, string day, string month, string week) => _cronList.RemoveAll(x => x.Minute == minute && x.Hour == hour && x.Day == day && x.Month == month && x.Week == week) is not 0;
+    public partial class CronSchedule : ICronList
+    {
+        public bool Add(string format) => _cronList.TryAdd(new CronExpression(format));
+        public bool Add(CronExpression cronExpression) => _cronList.TryAdd(cronExpression);
+        public bool Add(IList<CronExpression> list) => _cronList.TryAdd(list);
+        public bool Get(int index, out CronExpression cron) => _cronList.TryGet(index, out cron);
+
+        public bool Get(string format, out CronExpression cron)
+        {
+            cron = _cronList.FirstOrDefault(x => x.IsMatchFormat(format));
+
+            return cron is not { };
+        }
+
+        public bool Remove(string format)
+        {
+            var cron = _cronList.FirstOrDefault(x => x.IsMatchFormat(format));
+            if (cron is not { })
+                return false;
+
+            _cronList.Remove(cron);
+            return true;
+        }
+
         public void RemoveAll() => _cronList.Clear();
-        public bool RemoveAt(int index) => _cronList.TryRemoveAt(index);
 
-        #region SAVE
-        public bool CheckFile() => this.Exists();
+        public bool RemoveAt(int index)
+        {
+            _cronList.TryGet(index, out var result);
+            if (result is not { })
+                return false;
 
-        public void DeleteFile() => this.Delete();
+            _cronList.Remove(result);
+            return true;
+        }
+    }
 
-        public bool Load() => this.TryLoad(out _cronList);
+    public partial class CronSchedule : IFileSave
+    {
+        public string FilePath { get; }
 
         public bool Save() => this.TrySave(_cronList);
-        #endregion
+        public bool Load() => this.TryLoad(out _cronList);
+        public bool CheckFile() => this.Exists();
+        public void DeleteFile() => this.Delete();
+    }
 
-        #region IObservable
-        public IDisposable Subscribe(IObserver<Cron> observer)
+    public partial class CronSchedule : INullable<CronSchedule>
+    {
+    }
+
+    public partial class CronSchedule : IObservable<CronExpression>
+    {
+        public IDisposable Subscribe(IObserver<CronExpression> observer)
         {
             if (!_observers.Contains(observer))
                 _observers.Add(observer);
 
-            return new Unsubscriber<Cron>(_observers, observer);
+            return new Unsubscriber<CronExpression>(_observers, observer);
         }
 
-        private class Unsubscriber<Cron>(List<IObserver<Cron>> observers, IObserver<Cron> observer) : IDisposable
+        private class Unsubscriber<CronExpression>(List<IObserver<CronExpression>> observers, IObserver<CronExpression> observer) : IDisposable
         {
             void IDisposable.Dispose()
             {
@@ -65,6 +108,5 @@ namespace Asterism.System
                     observers.Remove(observer);
             }
         }
-        #endregion
     }
 }
