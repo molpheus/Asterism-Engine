@@ -3,25 +3,24 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-using Asterism.Common;
+using Asterism.Common.FileManagement;
 using Asterism.Common.Extension;
 
 namespace Asterism.System.Cron
 {
     public partial class CronSchedule
     {
-        public const string FileName = "cron.xml";
-
         protected List<CronExpression> _cronList = null;
         public int Count => _cronList.Count;
         private List<IObserver<CronExpression>> _observers = null;
-        
+        public IFileSave<List<CronExpression>> FileHandler => _fileHandler;
+        private readonly IFileSave<List<CronExpression>> _fileHandler;
+
         public CronSchedule(string filePath = null)
         {
             _cronList = new List<CronExpression>();
             _observers = new List<IObserver<CronExpression>>();
-            filePath ??= Directory.GetCurrentDirectory();
-            FilePath = Path.Combine(filePath, FileName);
+            _fileHandler = new XmlFileHandler<List<CronExpression>>("cron.xml", filePath);
         }
     }
 
@@ -76,19 +75,8 @@ namespace Asterism.System.Cron
         }
     }
 
-    public partial class CronSchedule : IFileSave
-    {
-        public string FilePath { get; }
-
-        public bool Save() => this.TrySave(_cronList);
-        public bool Load() => this.TryLoad(out _cronList);
-        public bool CheckFile() => this.Exists();
-        public void DeleteFile() => this.Delete();
-    }
-
     public partial class CronSchedule : INullable<CronSchedule>
-    {
-    }
+    { }
 
     public partial class CronSchedule : IObservable<CronExpression>
     {
