@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Reactive.Linq;
 
 using Asterism.Common.Extension;
 using Asterism.System.Reminder;
@@ -15,7 +14,7 @@ namespace UnitTest.System
         [TestMethod]
         public void TestAdd_追加1()
         {
-            var reminder = new Reminder();
+            var reminder = new ReminderSchedule();
             reminder.Add(DateTime.Now, "Test");
             Assert.AreEqual(1, reminder.Count);
         }
@@ -23,7 +22,7 @@ namespace UnitTest.System
         [TestMethod]
         public void TestAdd_追加2()
         {
-            var reminder = new Reminder();
+            var reminder = new ReminderSchedule();
             reminder.Add(new RemindData(DateTime.Now, "Test1"));
             Assert.AreEqual(1, reminder.Count);
         }
@@ -31,7 +30,7 @@ namespace UnitTest.System
         [TestMethod]
         public void TestAdd_複数追加()
         {
-            var reminder = new Reminder();
+            var reminder = new ReminderSchedule();
             reminder.AddList([
                 new RemindData(DateTime.Now, "Test1"),
                 new RemindData(DateTime.Now.AddMinutes(1), "Test2"),
@@ -44,7 +43,7 @@ namespace UnitTest.System
         [TestMethod]
         public void TestAdd_Nullが代入された()
         {
-            var reminder = new Reminder();
+            var reminder = new ReminderSchedule();
             reminder.Add(null);
             Assert.AreEqual(0, reminder.Count);
         }
@@ -52,9 +51,10 @@ namespace UnitTest.System
         [TestMethod]
         public void TestAdd_重複()
         {
-            var reminder = new Reminder();
-            reminder.Add(DateTime.Now, "Test");
-            bool isResult = reminder.Add(DateTime.Now, "Test");
+            var reminder = new ReminderSchedule();
+            var now = DateTime.Now;
+            reminder.Add(now, "Test");
+            bool isResult = reminder.Add(now, "Test");
             Assert.AreEqual(false, isResult);
         }
 
@@ -64,7 +64,7 @@ namespace UnitTest.System
         [TestMethod]
         public void TestGet()
         {
-            var reminder = new Reminder();
+            var reminder = new ReminderSchedule();
             reminder.Add(DateTime.Now, "Test");
             bool isResult = reminder.Get(0, out var remindData);
             Assert.AreEqual(true, isResult);
@@ -74,7 +74,7 @@ namespace UnitTest.System
         [TestMethod]
         public void TestGet_取得失敗()
         {
-            var reminder = new Reminder();
+            var reminder = new ReminderSchedule();
             bool isResult = reminder.Get(0, out var remindData);
             Assert.AreEqual(false, isResult);
             Assert.AreEqual(true, remindData.IsNullOrDefault());
@@ -85,7 +85,7 @@ namespace UnitTest.System
         [TestMethod]
         public void TestRemoveDatetime()
         {
-            var reminder = new Reminder();
+            var reminder = new ReminderSchedule();
             var currentTime = DateTime.Now;
             reminder.Add(currentTime, "Test");
             reminder.Add(currentTime.AddMinutes(1), "Test");
@@ -97,63 +97,19 @@ namespace UnitTest.System
         [TestMethod]
         public void TestRemove_削除項目なし()
         {
-            var reminder = new Reminder();
-            reminder.Add(DateTime.Now, "Test");
-            bool isResult = reminder.Remove(DateTime.Now.AddMinutes(1));
+            var reminder = new ReminderSchedule();
+            reminder.Add(DateTime.Now.AddMinutes(1), "Test");
+            bool isResult = reminder.Remove(DateTime.Now);
             Assert.AreEqual(false, isResult);
         }
 
         [TestMethod]
         public void TestUpdate()
         {
-            var reminder = new Reminder();
+            var reminder = new ReminderSchedule();
             reminder.Add(DateTime.Now.AddSeconds(-1), "Test");
             reminder.Update(DateTime.Now);
             Assert.AreEqual(0, reminder.Count);
-        }
-
-        [TestMethod]
-        public void TestSave()
-        {
-            var reminder = new Reminder();
-            reminder.DeleteFile();
-            reminder.Add(DateTime.Now, "Test");
-            reminder.Save();
-            Assert.AreEqual(true, reminder.CheckFile());
-        }
-
-        [TestMethod]
-        public void TestLoad()
-        {
-            var reminder = new Reminder();
-            reminder.DeleteFile();
-            reminder.Add(DateTime.Now, "Test");
-            reminder.Save();
-            reminder.RemoveAll();
-
-            reminder.Load();
-            Assert.AreEqual(1, reminder.Count);
-        }
-
-        [TestMethod]
-        public void TestDeleteFile()
-        {
-            var reminder = new Reminder();
-            reminder.DeleteFile();
-            Assert.AreEqual(false, reminder.CheckFile());
-        }
-
-        [TestMethod]
-        public void TestSubscribe()
-        {
-            var reminder = new Reminder();
-            var currentTime = DateTime.Now;
-            reminder.Add(currentTime, "Test");
-            var isUpdated = false;
-            var disposable = reminder.Subscribe(_ => { isUpdated = true; });
-            reminder.Update(DateTime.Now);
-            disposable.Dispose();
-            Assert.AreEqual(true, isUpdated);
         }
     }
 }

@@ -13,8 +13,7 @@ namespace Asterism.System.Cron
         protected List<CronExpression> _cronList = null;
         public int Count => _cronList.Count;
         private List<IObserver<CronExpression>> _observers = null;
-        public IFileSave<List<CronExpression>> FileHandler => _fileHandler;
-        private readonly IFileSave<List<CronExpression>> _fileHandler;
+        private readonly IFileSaveSettings<List<CronExpression>> _fileHandler;
 
         public CronSchedule(string filePath = null)
         {
@@ -22,6 +21,14 @@ namespace Asterism.System.Cron
             _observers = new List<IObserver<CronExpression>>();
             _fileHandler = new XmlFileHandler<List<CronExpression>>("cron.xml", filePath);
         }
+    }
+
+    public partial class CronSchedule : IFileSave
+    {
+        public bool Save() => _fileHandler.Save(_cronList);
+        public bool Load() => _fileHandler.Load(out _cronList);
+        public bool Exists() => _fileHandler.Exists();
+        public void Delete() => _fileHandler.Delete();
     }
 
     public partial class CronSchedule : IScheduledUpdatable
@@ -42,7 +49,7 @@ namespace Asterism.System.Cron
     {
         public bool Add(string format) => _cronList.TryAdd(new CronExpression(format));
         public bool Add(CronExpression cronExpression) => _cronList.TryAdd(cronExpression);
-        public bool Add(IList<CronExpression> list) => _cronList.TryAdd(list);
+        public bool Add(IList<CronExpression> list) => _cronList.TryAddRange(list);
         public bool Get(int index, out CronExpression cron) => _cronList.TryGet(index, out cron);
 
         public bool Get(string format, out CronExpression cron)

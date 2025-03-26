@@ -61,12 +61,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Common\AppException.cs" />
+    <Compile Include="Common\Collection\ICollectionExtension.cs" />
     <Compile Include="Common\Crypt\AES.cs" />
     <Compile Include="Common\Disposable.cs" />
     <Compile Include="Common\Enumeration.cs" />
     <Compile Include="Common\Extension\Extension.cs" />
     <Compile Include="Common\Extension\ListExtension.cs" />
-    <Compile Include="Common\FileSave.cs" />
+    <Compile Include="Common\FileManagement\IFileSaveSettings.cs" />
+    <Compile Include="Common\FileManagement\XmlFileHandler.cs" />
+    <Compile Include="Common\FileManagement\IFileSave.cs" />
     <Compile Include="Common\NumVariable.cs" />
     <Compile Include="Common\ServiceLocator.cs" />
     <Compile Include="CSCore\BasicSpectrumProvider.cs" />
@@ -83,11 +86,14 @@
     <Compile Include="System\Cron\ICronExpression.cs" />
     <Compile Include="System\Cron\ICronList.cs" />
     <Compile Include="System\IScheduledUpdatable.cs" />
+    <Compile Include="System\Reminder\IRemindList.cs" />
     <Compile Include="System\Reminder\RemindData.cs" />
-    <Compile Include="System\Reminder\Reminder.cs" />
+    <Compile Include="System\Reminder\ReminderSchedule.cs" />
+    <Compile Include="System\Reminder\RemindList.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

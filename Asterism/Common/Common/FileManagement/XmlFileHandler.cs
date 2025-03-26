@@ -5,9 +5,8 @@ using System.Xml.Serialization;
 
 namespace Asterism.Common.FileManagement
 {
-    public sealed class XmlFileHandler<T> : IFileSave<T>
+    public sealed class XmlFileHandler<T> : IFileSaveSettings<T>
     {
-        public string FileName { get; }
         public string FilePath { get; }
 
         public XmlFileHandler(string fileName, string filePath = null)
