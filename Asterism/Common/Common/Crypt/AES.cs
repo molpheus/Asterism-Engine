@@ -52,6 +52,11 @@ namespace Asterism.Common.Crypt
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
         public byte[] Encrypt(string text)
         {
             using (var aes = new AesManaged())
@@ -68,6 +73,11 @@ namespace Asterism.Common.Crypt
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
         public string Decrypt(byte[] data)
         {
             using (var aes = new AesManaged())
