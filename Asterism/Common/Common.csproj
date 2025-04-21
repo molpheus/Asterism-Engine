@@ -68,17 +68,16 @@
     <Compile Include="Common\Extension\Extension.cs" />
     <Compile Include="Common\Extension\ListExtension.cs" />
     <Compile Include="Common\FileManagement\IFileSaveSettings.cs" />
+    <Compile Include="Common\FileManagement\StringFileHandler.cs" />
     <Compile Include="Common\FileManagement\XmlFileHandler.cs" />
     <Compile Include="Common\FileManagement\IFileSave.cs" />
+    <Compile Include="Common\Menu\Component\MenuBase.cs" />
+    <Compile Include="Common\Menu\Component\MenuLabel.cs" />
+    <Compile Include="Common\Menu\Component\MenuToggle.cs" />
+    <Compile Include="Common\Menu\Component\MenuToggleGroup.cs" />
+    <Compile Include="Common\Network\WebConnecter.cs" />
     <Compile Include="Common\NumVariable.cs" />
     <Compile Include="Common\ServiceLocator.cs" />
-    <Compile Include="CSCore\BasicSpectrumProvider.cs" />
-    <Compile Include="CSCore\GradientCalculator.cs" />
-    <Compile Include="CSCore\ISpectrumProvider.cs" />
-    <Compile Include="CSCore\LineSpectrum.cs" />
-    <Compile Include="CSCore\ScalingStrategy.cs" />
-    <Compile Include="CSCore\SpectrumBase.cs" />
-    <Compile Include="CSCore\VoicePrint3DSpectrum.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="System\Cron\CronExpression.cs" />
     <Compile Include="System\Cron\CronField.cs" />
@@ -90,9 +89,9 @@
     <Compile Include="System\Reminder\RemindData.cs" />
     <Compile Include="System\Reminder\ReminderSchedule.cs" />
     <Compile Include="System\Reminder\RemindList.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="packages.config" />
+    <Compile Include="System\RubberDuck\RubberDuck.cs" />
+    <Compile Include="System\Timer\PomodoroTimer.cs" />
+    <Compile Include="System\Translate\DeepLTranslate.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

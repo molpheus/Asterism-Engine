@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Asterism.Common
 {
@@ -21,7 +18,7 @@ namespace Asterism.Common
 
         public void Clear()
         {
-            foreach(var disposable in _disposables)
+            foreach (var disposable in _disposables)
             {
                 disposable.Dispose();
             }

@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
-using Asterism.Common.FileManagement;
 using Asterism.Common.Extension;
+using Asterism.Common.FileManagement;
 
 namespace Asterism.System.Cron
 {
@@ -12,7 +11,6 @@ namespace Asterism.System.Cron
     {
         protected List<CronExpression> _cronList = null;
         public int Count => _cronList.Count;
-        private List<IObserver<CronExpression>> _observers = null;
         private readonly IFileSaveSettings<List<CronExpression>> _fileHandler;
 
         public CronSchedule(string filePath = null)
@@ -87,6 +85,9 @@ namespace Asterism.System.Cron
 
     public partial class CronSchedule : IObservable<CronExpression>
     {
+
+        private List<IObserver<CronExpression>> _observers = null;
+
         public IDisposable Subscribe(IObserver<CronExpression> observer)
         {
             if (!_observers.Contains(observer))

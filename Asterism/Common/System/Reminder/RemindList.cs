@@ -2,8 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 using Asterism.Common.Collection;
 
@@ -26,7 +24,7 @@ namespace Asterism.System.Reminder
 
         public void CopyTo(RemindData[] array, int arrayIndex)
         {
-            for(int i = arrayIndex; i < array.Length; i++)
+            for (int i = arrayIndex; i < array.Length; i++)
                 _remindList.Add(array[i]);
         }
 

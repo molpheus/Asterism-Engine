@@ -8,5 +8,5 @@
         }
     }
 
-    public interface INullable<T> {}
+    public interface INullable<T> { }
 }

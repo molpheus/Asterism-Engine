@@ -10,7 +10,7 @@ namespace Asterism.System.Reminder
         public DateTime Time = time;
         public string Message = message;
 
-        public RemindData(): this(DateTime.MinValue, string.Empty) { }
+        public RemindData() : this(DateTime.MinValue, string.Empty) { }
 
         int IComparable<RemindData>.CompareTo(RemindData other) => other.Time.CompareTo(Time);
 
