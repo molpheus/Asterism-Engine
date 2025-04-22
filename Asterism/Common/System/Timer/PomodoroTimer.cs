@@ -49,6 +49,8 @@ namespace Asterism.System.Timer
         /// </summary>
         private bool _isPlaying = false;
 
+        public Action OnChegeState { get; set; } = null;
+
         public void Start(DateTime now, bool isPlaying)
         {
             CurrentPomodoroCount = 0;
@@ -74,6 +76,8 @@ namespace Asterism.System.Timer
             if (!_isPlaying) return null;
 
             TimeSpan elapsed = now - _playDatetime;
+
+            var oldState = State;
 
             switch (State)
             {
@@ -111,6 +115,11 @@ namespace Asterism.System.Timer
                     _isPlaying = false;
                 }
                 break;
+            }
+
+            if (oldState != State)
+            {
+                OnChegeState?.Invoke();
             }
 
             return elapsed;
