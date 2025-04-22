@@ -68,8 +68,9 @@ namespace Asterism.System.Timer
             _isPlaying = true;
         }
 
-        public TimeSpan? Update(DateTime now)
+        public TimeSpan? Update(DateTime now, out float progress)
         {
+            progress = 0;
             if (!_isPlaying) return null;
 
             TimeSpan elapsed = now - _playDatetime;
@@ -77,6 +78,7 @@ namespace Asterism.System.Timer
             switch (State)
             {
                 case PomodoroState.Working:
+                progress = (float)elapsed.TotalSeconds / (float)_workTime.TotalSeconds;
                 if (elapsed >= _workTime)
                 {
                     CurrentPomodoroCount++;
@@ -93,6 +95,7 @@ namespace Asterism.System.Timer
                 break;
 
                 case PomodoroState.Resting:
+                progress = (float)elapsed.TotalSeconds / (float)_restingTime.TotalSeconds;
                 if (elapsed >= _restingTime)
                 {
                     State = PomodoroState.Working;
@@ -101,6 +104,7 @@ namespace Asterism.System.Timer
                 break;
 
                 case PomodoroState.LongResting:
+                progress = (float)elapsed.TotalSeconds / (float)_longRestingTime.TotalSeconds;
                 if (elapsed >= _longRestingTime)
                 {
                     State = PomodoroState.Working;
