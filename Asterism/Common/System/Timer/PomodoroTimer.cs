@@ -2,111 +2,114 @@
 
 namespace Asterism.System.Timer
 {
-    public class PomodoroTimer(TimeSpan _workTime, TimeSpan _breakTime, int _repeat)
+    public class PomodoroTimer(TimeSpan _workTime, TimeSpan _restingTime, TimeSpan _longRestingTime, int _repeat)
     {
 
         public enum PomodoroState
         {
             NotStarted,
             Working,
-            OnBreak,
+            Resting,
+            LongResting,
             Pause,
         }
 
+        /// <summary>
+        /// 現在の状態
+        /// </summary>
         public PomodoroState State { get; private set; } = PomodoroState.NotStarted;
 
+        /// <summary>
+        /// 作業時間
+        /// </summary>
         public TimeSpan WorkDuration => _workTime;
-        public TimeSpan BreakDuration => _breakTime;
+        /// <summary>
+        /// 休憩時間
+        /// </summary>
+        public TimeSpan RestingDuration => _restingTime;
+        /// <summary>
+        /// 長休憩時間
+        /// </summary>
+        public TimeSpan LongRestingDuration => _longRestingTime;
 
-        public int RepeatCount => _repeat;
-        public int CurrentRepeatCount { get; private set; } = 0;
+        /// <summary>
+        /// ポモドーロ回数
+        /// </summary>
+        public int PomodoroCount => _repeat;
 
-        public bool isRunning => State != PomodoroState.NotStarted;
+        public int CurrentPomodoroCount { get; private set; } = 0;
 
-        private DateTime _startTime;
+        /// <summary>
+        /// 開始時間
+        /// </summary>
+        private DateTime _playDatetime = default;
 
-        public TimeSpan NowSpan;
+        /// <summary>
+        /// 稼働中かどうか
+        /// </summary>
+        private bool _isPlaying = false;
 
-        private TimeSpan _remaingTime;
-        private PomodoroState _remaindState;
-
-        public void Start(DateTime now)
+        public void Start(DateTime now, bool isPlaying)
         {
-            if (isRunning)
-                return;
-
-            _startTime = now;
+            CurrentPomodoroCount = 0;
             State = PomodoroState.Working;
-            CurrentRepeatCount = 0;
-            NowSpan = TimeSpan.Zero;
+            if (isPlaying) Play(now);
         }
+
         public void Stop()
         {
-            if (!isRunning)
-                return;
-
             State = PomodoroState.NotStarted;
+            _isPlaying = false;
         }
 
-        /// <summary>
-        /// Pause the Pomodoro Timer
-        /// </summary>
-        public void Pause(DateTime now)
+        public void Play(DateTime now)
         {
-            if (!isRunning)
-                return;
-
-            if (State != PomodoroState.Pause)
-            {
-                _remaindState = State;
-                State = PomodoroState.Pause;
-
-                _remaingTime = _remaindState == PomodoroState.Working ? WorkDuration - (now - _startTime) : BreakDuration - (now - _startTime);
-            }
-            else
-            {
-                _startTime = now - (_remaindState == PomodoroState.Working ? WorkDuration - _remaingTime : BreakDuration - _remaingTime);
-                State = _remaindState;
-                _remaingTime = TimeSpan.Zero;
-            }
+            _playDatetime = now;
+            _isPlaying = true;
         }
 
-        /// <summary>
-        /// Update Pomodoro Timer
-        /// </summary>
-        /// <param name="now"> current Time </param>
-        public void Update(DateTime now)
+        public TimeSpan? Update(DateTime now)
         {
-            if (!isRunning || State == PomodoroState.Pause)
-                return;
+            if (!_isPlaying) return null;
 
-            NowSpan = now - _startTime;
+            TimeSpan elapsed = now - _playDatetime;
 
             switch (State)
             {
                 case PomodoroState.Working:
-                if (NowSpan >= WorkDuration)
+                if (elapsed >= _workTime)
                 {
-                    State = PomodoroState.OnBreak;
-                    _startTime = now;
+                    CurrentPomodoroCount++;
+                    if (CurrentPomodoroCount % PomodoroCount == 0)
+                    {
+                        State = PomodoroState.LongResting;
+                    }
+                    else
+                    {
+                        State = PomodoroState.Resting;
+                    }
+                    _isPlaying = false;
                 }
                 break;
-                case PomodoroState.OnBreak:
-                if (NowSpan >= BreakDuration)
+
+                case PomodoroState.Resting:
+                if (elapsed >= _restingTime)
                 {
                     State = PomodoroState.Working;
-                    _startTime = now;
-                    CurrentRepeatCount++;
+                    _isPlaying = false;
+                }
+                break;
 
-                    if (CurrentRepeatCount >= RepeatCount)
-                    {
-                        // Reset the timer
-                        State = PomodoroState.NotStarted;
-                        CurrentRepeatCount = 0;
-                    }
+                case PomodoroState.LongResting:
+                if (elapsed >= _longRestingTime)
+                {
+                    State = PomodoroState.Working;
+                    _isPlaying = false;
                 }
                 break;
             }
+
+            return elapsed;
         }
     }
 }
