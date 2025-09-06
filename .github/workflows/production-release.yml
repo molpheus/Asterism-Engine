@@ -73,19 +73,40 @@ jobs:
         echo "Version will be: $version"
         
     - name: Create git tag
+      shell: powershell
       run: |
         git config user.name "github-actions[bot]"
         git config user.email "github-actions[bot]@users.noreply.github.com"
-        git tag ${{ steps.version.outputs.version }}
-        git push origin ${{ steps.version.outputs.version }}
+        $version = "${{ steps.version.outputs.version }}"
+        Write-Host "Creating git tag: $version"
+        git tag $version
+        git push origin $version
+        Write-Host "Git tag created and pushed successfully."
         
     - name: Build C# Library
       shell: powershell
       run: |
         cd "Asterism/Common"
         Write-Host "Building C# library..."
-        msbuild Common.sln /p:Configuration=Release /p:Platform="Any CPU" /verbosity:minimal
-        Write-Host "C# library build completed."
+        try {
+          msbuild Common.sln /p:Configuration=Release /p:Platform="Any CPU" /verbosity:minimal
+          if ($LASTEXITCODE -ne 0) {
+            Write-Error "MSBuild failed with exit code $LASTEXITCODE"
+            exit 1
+          }
+          Write-Host "C# library build completed successfully."
+          
+          # Verify output files exist
+          if (Test-Path "bin/Release/AsterismCore.dll") {
+            Write-Host "✓ AsterismCore.dll created successfully"
+          } else {
+            Write-Error "AsterismCore.dll was not created"
+            exit 1
+          }
+        } catch {
+          Write-Error "Build failed: $_"
+          exit 1
+        }
         
     - name: Build Unity Project
       uses: game-ci/unity-builder@v4
