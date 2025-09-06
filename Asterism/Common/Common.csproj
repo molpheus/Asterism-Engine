@@ -92,10 +92,13 @@
     <Compile Include="System\RubberDuck\RubberDuck.cs" />
     <Compile Include="System\Timer\PomodoroTimer.cs" />
     <Compile Include="System\Translate\DeepLTranslate.cs" />
-    <Compile Include="Common\WebCloning\Models\WebContent.cs" />
-    <Compile Include="Common\WebCloning\Html\HtmlParser.cs" />
-    <Compile Include="Common\WebCloning\WebContentCloner.cs" />
-    <Compile Include="Common\WebCloning\Examples\WebCloningExample.cs" />
+    <Compile Include="System\DomAnalysis\Models\DomElement.cs" />
+    <Compile Include="System\DomAnalysis\Models\DomDocument.cs" />
+    <Compile Include="System\DomAnalysis\Models\ParsingConfig.cs" />
+    <Compile Include="System\DomAnalysis\Parser\DomParser.cs" />
+    <Compile Include="System\DomAnalysis\Analyzers\IDomAnalyzer.cs" />
+    <Compile Include="System\DomAnalysis\Analyzers\StructureAnalyzer.cs" />
+    <Compile Include="System\DomAnalysis\Examples\DomAnalysisExample.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
