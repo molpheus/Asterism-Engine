@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -37,15 +38,40 @@ namespace Asterism.Common.Network
         }
 
 
-        public async Task GetAsync(string url, CancellationToken token)
+        public async Task<string> GetAsync(string url, CancellationToken token = default)
         {
+            if (Connections.Count == 0)
+                throw new InvalidOperationException("No available connections");
 
+            var client = Connections.Pop();
+            try
+            {
+                var response = await client.GetAsync(url, token);
+                response.EnsureSuccessStatusCode();
+                return await response.Content.ReadAsStringAsync();
+            }
+            finally
+            {
+                Connections.Push(client);
+            }
         }
 
-
-        public async Task PostAsync(string url, CancellationToken token)
+        public async Task<string> PostAsync(string url, HttpContent content, CancellationToken token = default)
         {
+            if (Connections.Count == 0)
+                throw new InvalidOperationException("No available connections");
 
+            var client = Connections.Pop();
+            try
+            {
+                var response = await client.PostAsync(url, content, token);
+                response.EnsureSuccessStatusCode();
+                return await response.Content.ReadAsStringAsync();
+            }
+            finally
+            {
+                Connections.Push(client);
+            }
         }
     }
 }
