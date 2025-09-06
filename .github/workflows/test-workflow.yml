@@ -1,0 +1,52 @@
+name: Test Production Workflow
+
+on:
+  push:
+    branches: [ copilot/fix-8 ]
+  workflow_dispatch:
+
+jobs:
+  test-build:
+    runs-on: windows-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      
+    - name: Setup .NET Framework
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.x'
+        
+    - name: Validate project structure
+      shell: powershell
+      run: |
+        Write-Host "Checking Unity project..."
+        if (Test-Path "Unity/Asterism Engine/ProjectSettings/ProjectSettings.asset") {
+          Write-Host "✓ Unity project found"
+        } else {
+          Write-Host "✗ Unity project not found"
+        }
+        
+        Write-Host "Checking C# project..."
+        if (Test-Path "Asterism/Common/Common.sln") {
+          Write-Host "✓ C# project found"
+        } else {
+          Write-Host "✗ C# project not found"
+        }
+        
+    - name: List project files
+      shell: powershell
+      run: |
+        Write-Host "=== Project Structure ==="
+        Get-ChildItem -Recurse -Depth 2 | Where-Object { -not $_.PSIsContainer } | Select-Object FullName | Format-Table -AutoSize
+        
+    - name: Check Unity version
+      shell: powershell
+      run: |
+        $versionFile = "Unity/Asterism Engine/ProjectSettings/ProjectVersion.txt"
+        if (Test-Path $versionFile) {
+          $content = Get-Content $versionFile
+          Write-Host "Unity Version Info:"
+          $content | ForEach-Object { Write-Host $_ }
+        }

@@ -1,0 +1,141 @@
+name: Production Release
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  release:
+    if: github.event.pull_request.merged == true && contains(github.event.pull_request.labels.*.name, 'production')
+    runs-on: windows-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+        
+    - name: Setup .NET Framework
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.x'
+        
+    - name: Install .NET Framework targeting pack
+      shell: powershell
+      run: |
+        # Download and install .NET Framework 4.8 Developer Pack
+        $url = "https://download.microsoft.com/download/7/4/0/7404A69D-5688-4D54-8D26-95B0F16FCCF5/ndp48-devpack-enu.exe"
+        $output = "$env:TEMP\ndp48-devpack-enu.exe"
+        Write-Host "Downloading .NET Framework 4.8 Developer Pack..."
+        Invoke-WebRequest -Uri $url -OutFile $output
+        Write-Host "Installing .NET Framework 4.8 Developer Pack..."
+        Start-Process -FilePath $output -ArgumentList "/quiet" -Wait
+        Write-Host ".NET Framework 4.8 Developer Pack installed."
+        
+    - name: Validate Unity project structure
+      shell: powershell
+      run: |
+        $unityProjectPath = "Unity/Asterism Engine"
+        if (Test-Path "$unityProjectPath/ProjectSettings/ProjectSettings.asset") {
+          Write-Host "Unity project structure validated."
+        } else {
+          Write-Error "Unity project structure invalid. ProjectSettings not found."
+          exit 1
+        }
+        
+    - name: Validate C# project structure  
+      shell: powershell
+      run: |
+        $csharpProjectPath = "Asterism/Common"
+        if (Test-Path "$csharpProjectPath/Common.sln") {
+          Write-Host "C# project structure validated."
+        } else {
+          Write-Error "C# project structure invalid. Solution file not found."
+          exit 1
+        }
+        
+    - name: Setup Unity
+      uses: game-ci/unity-setup@v4
+      with:
+        unity-version: 6000.0.45f1
+        unity-modules: |
+          webgl
+          windows-mono
+          
+    - name: Generate version tag
+      id: version
+      shell: powershell
+      run: |
+        $date = Get-Date -Format "yyyy.MM.dd"
+        $buildNumber = $env:GITHUB_RUN_NUMBER
+        $version = "v$date.$buildNumber"
+        echo "version=$version" >> $env:GITHUB_OUTPUT
+        echo "Version will be: $version"
+        
+    - name: Create git tag
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        git tag ${{ steps.version.outputs.version }}
+        git push origin ${{ steps.version.outputs.version }}
+        
+    - name: Build C# Library
+      shell: powershell
+      run: |
+        cd "Asterism/Common"
+        Write-Host "Building C# library..."
+        msbuild Common.sln /p:Configuration=Release /p:Platform="Any CPU" /verbosity:minimal
+        Write-Host "C# library build completed."
+        
+    - name: Build Unity Project
+      uses: game-ci/unity-builder@v4
+      env:
+        UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+        UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+        UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+      with:
+        projectPath: "Unity/Asterism Engine"
+        targetPlatform: StandaloneWindows64
+        buildName: AsterismEngine
+        
+    - name: Upload C# Library Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: csharp-library-${{ steps.version.outputs.version }}
+        path: |
+          Asterism/Common/bin/Release/
+          Unity/Asterism Engine/Assets/asterism/Plugins/x86_64/
+        retention-days: 30
+        
+    - name: Upload Unity Build Artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: unity-build-${{ steps.version.outputs.version }}
+        path: build/
+        retention-days: 30
+        
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: ${{ steps.version.outputs.version }}
+        name: Production Release ${{ steps.version.outputs.version }}
+        body: |
+          🚀 Production release automatically created from PR #${{ github.event.pull_request.number }}
+          
+          **Changes:**
+          ${{ github.event.pull_request.title }}
+          
+          **Built from:**
+          - Commit: ${{ github.sha }}
+          - Branch: ${{ github.event.pull_request.head.ref }}
+          
+          **Artifacts:**
+          - C# Library (AsterismCore.dll)
+          - Unity Engine Build
+        files: |
+          Asterism/Common/bin/Release/*.dll
+          build/**/*
+        draft: false
+        prerelease: false
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
