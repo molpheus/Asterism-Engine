@@ -38,7 +38,7 @@ namespace Asterism.Common.Network
         }
 
 
-        public async Task<string> GetAsync(string url, CancellationToken token = default)
+        public async Task<string> GetAsync(string url, CancellationToken token)
         {
             if (Connections.Count == 0)
                 throw new InvalidOperationException("No available connections");
@@ -56,7 +56,7 @@ namespace Asterism.Common.Network
             }
         }
 
-        public async Task<string> PostAsync(string url, HttpContent content, CancellationToken token = default)
+        public async Task<string> PostAsync(string url, HttpContent content, CancellationToken token)
         {
             if (Connections.Count == 0)
                 throw new InvalidOperationException("No available connections");

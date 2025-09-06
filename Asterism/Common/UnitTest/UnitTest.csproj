@@ -49,6 +49,10 @@
     <Compile Include="System\CronTest.cs" />
     <Compile Include="System\PomodoroTest.cs" />
     <Compile Include="System\ReminderTest.cs" />
+    <Compile Include="System\DomAnalysis\DomParserTest.cs" />
+    <Compile Include="System\DomAnalysis\DomElementTest.cs" />
+    <Compile Include="System\DomAnalysis\StructureAnalyzerTest.cs" />
+    <Compile Include="System\DomAnalysis\ParsingConfigTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="CSCore">
