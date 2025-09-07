@@ -19,6 +19,7 @@
     <PackageReference Include="MSTest.TestAdapter" Version="4.0.0-preview.25454.2" />
     <PackageReference Include="MSTest.TestFramework" Version="4.0.0-preview.25454.2" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
+    <PackageReference Include="coverlet.collector" Version="6.0.0" />
     <PackageReference Include="System.Reactive" Version="6.0.2" />
     <PackageReference Include="System.Reactive.Core" Version="6.0.2" />
     <PackageReference Include="System.Reactive.Linq" Version="6.0.2" />
