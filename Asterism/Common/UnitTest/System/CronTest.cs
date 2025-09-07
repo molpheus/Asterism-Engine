@@ -50,13 +50,13 @@ namespace UnitTest.System
         [TestMethod]
         public void TestAdd_InvalidFormat_ThrowsException()
         {
-            Assert.ThrowsException<ArgumentException>(() => _cronSchedule.Add("invalid format"));
+            Assert.Throws<ArgumentException>(() => _cronSchedule.Add("invalid format"));
         }
 
         [TestMethod]
         public void TestAdd_Nullが代入された()
         {
-            Assert.ThrowsException<ArgumentException>(() => _cronSchedule.Add(""));
+            Assert.Throws<ArgumentException>(() => _cronSchedule.Add(""));
         }
 
         [TestMethod]
@@ -103,7 +103,7 @@ namespace UnitTest.System
 
             _cronSchedule.Update(new DateTime(2023, 10, 10, 0, 0, 0));
 
-            Assert.AreEqual(1, observer.NotifiedExpressions.Count);
+            Assert.HasCount(1, observer.NotifiedExpressions);
             Assert.AreEqual(cronExpression, observer.NotifiedExpressions[0]);
         }
 

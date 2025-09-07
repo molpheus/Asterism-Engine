@@ -39,13 +39,13 @@ namespace Asterism.Common.Network
 
         public async Task GetAsync(string url, CancellationToken token)
         {
-
+            await Task.CompletedTask;
         }
 
 
         public async Task PostAsync(string url, CancellationToken token)
         {
-
+            await Task.CompletedTask;
         }
     }
 }
