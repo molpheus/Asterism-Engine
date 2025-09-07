@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -37,15 +38,54 @@ namespace Asterism.Common.Network
         }
 
 
-        public async Task GetAsync(string url, CancellationToken token)
+        public async Task<string> GetAsync(string url, CancellationToken token = default)
         {
-            await Task.CompletedTask;
+            HttpClient client = null;
+            try
+            {
+                if (Connections.TryPop(out client))
+                {
+                    var response = await client.GetAsync(url, token);
+                    response.EnsureSuccessStatusCode();
+                    return await response.Content.ReadAsStringAsync();
+                }
+                else
+                {
+                    throw new InvalidOperationException("No available HTTP connections");
+                }
+            }
+            finally
+            {
+                if (client != null)
+                {
+                    Connections.Push(client);
+                }
+            }
         }
 
-
-        public async Task PostAsync(string url, CancellationToken token)
+        public async Task<string> PostAsync(string url, HttpContent content, CancellationToken token = default)
         {
-            await Task.CompletedTask;
+            HttpClient client = null;
+            try
+            {
+                if (Connections.TryPop(out client))
+                {
+                    var response = await client.PostAsync(url, content, token);
+                    response.EnsureSuccessStatusCode();
+                    return await response.Content.ReadAsStringAsync();
+                }
+                else
+                {
+                    throw new InvalidOperationException("No available HTTP connections");
+                }
+            }
+            finally
+            {
+                if (client != null)
+                {
+                    Connections.Push(client);
+                }
+            }
         }
     }
 }
