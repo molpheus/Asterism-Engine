@@ -55,7 +55,7 @@ namespace UnitTest.System
             var now = DateTime.Now;
             reminder.Add(now, "Test");
             bool isResult = reminder.Add(now, "Test");
-            Assert.AreEqual(false, isResult);
+            Assert.IsFalse(isResult);
         }
 
         #endregion
@@ -67,7 +67,7 @@ namespace UnitTest.System
             var reminder = new ReminderSchedule();
             reminder.Add(DateTime.Now, "Test");
             bool isResult = reminder.Get(0, out var remindData);
-            Assert.AreEqual(true, isResult);
+            Assert.IsTrue(isResult);
             Assert.AreEqual("Test", remindData.Message);
         }
 
@@ -76,8 +76,8 @@ namespace UnitTest.System
         {
             var reminder = new ReminderSchedule();
             bool isResult = reminder.Get(0, out var remindData);
-            Assert.AreEqual(false, isResult);
-            Assert.AreEqual(true, remindData.IsNullOrDefault());
+            Assert.IsFalse(isResult);
+            Assert.IsTrue(remindData.IsNullOrDefault());
         }
 
         #endregion
@@ -100,7 +100,7 @@ namespace UnitTest.System
             var reminder = new ReminderSchedule();
             reminder.Add(DateTime.Now.AddMinutes(1), "Test");
             bool isResult = reminder.Remove(DateTime.Now);
-            Assert.AreEqual(false, isResult);
+            Assert.IsFalse(isResult);
         }
 
         [TestMethod]

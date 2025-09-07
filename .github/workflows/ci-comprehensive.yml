@@ -1,0 +1,103 @@
+name: CI/CD - Code Quality & Unit Tests
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build-test-analyze:
+    name: Build, Test & Code Quality Check
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+      
+    - name: 🔧 Setup .NET SDK
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '9.0.x'
+        
+    - name: 🔄 Restore NuGet packages
+      run: |
+        echo "Restoring NuGet packages..."
+        dotnet restore "Asterism/Common/Common.sln"
+      
+    - name: 🏗️ Build solution (Code Error Check)
+      run: |
+        echo "Building solution to check for code errors..."
+        dotnet build "Asterism/Common/Common.sln" --configuration Debug --no-restore --verbosity normal
+        
+        if [ $? -eq 0 ]; then
+          echo "✅ Build successful - No code errors found!"
+        else
+          echo "❌ Build failed - Code errors detected!"
+          exit 1
+        fi
+      
+    - name: 🧪 Run Unit Tests
+      run: |
+        echo "Running unit tests..."
+        dotnet test "Asterism/Common/UnitTest/UnitTest.csproj" --configuration Debug --no-build --verbosity normal --logger trx --results-directory TestResults --collect:"XPlat Code Coverage"
+        
+    - name: 📊 Publish Test Results
+      uses: dorny/test-reporter@v1
+      if: always()
+      with:
+        name: Unit Test Results
+        path: TestResults/*.trx
+        reporter: dotnet-trx
+        fail-on-error: true
+        
+    - name: 📋 Upload Test Results
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: test-results
+        path: TestResults/
+        
+    - name: 📈 Code Coverage Report
+      run: |
+        echo "Generating code coverage report..."
+        # Install dotnet reportgenerator tool
+        dotnet tool install -g dotnet-reportgenerator-globaltool
+        
+        # Generate HTML and Cobertura reports
+        if ls TestResults/**/coverage.cobertura.xml 1> /dev/null 2>&1; then
+          reportgenerator "-reports:TestResults/**/coverage.cobertura.xml" "-targetdir:TestResults/CoverageReport" "-reporttypes:Html;Cobertura"
+          echo "✅ Code coverage report generated successfully"
+        else
+          echo "⚠️ No coverage files found"
+        fi
+      if: always()
+        
+    - name: 📊 Code Coverage Summary
+      uses: irongut/CodeCoverageSummary@v1.3.0
+      if: always()
+      with:
+        filename: TestResults/**/coverage.cobertura.xml
+        badge: true
+        fail_below_min: false
+        format: markdown
+        hide_branch_rate: false
+        hide_complexity: true
+        indicators: true
+        output: both
+        thresholds: '60 80'
+        
+    - name: 📋 Upload Coverage Report
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: coverage-report
+        path: TestResults/CoverageReport/
+        
+    - name: ✅ Summary
+      if: success()
+      run: |
+        echo "🎉 All checks passed!"
+        echo "✅ Code compilation successful"
+        echo "✅ Unit tests passed"
+        echo "✅ Code quality check completed"

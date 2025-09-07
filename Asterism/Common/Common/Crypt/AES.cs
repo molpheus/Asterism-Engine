@@ -38,7 +38,7 @@ namespace Asterism.Common.Crypt
         /// <returns> ( Key , IV ) </returns>
         public static (byte[], byte[]) GenerateKey(BlockSize blockSize = BlockSize.Block256)
         {
-            using (var aes = new AesManaged())
+            using (var aes = Aes.Create())
             {
                 aes.KeySize = (int)blockSize; // 256ビット（32バイト）キー
                 aes.GenerateKey();
@@ -55,7 +55,7 @@ namespace Asterism.Common.Crypt
         /// <returns></returns>
         public byte[] Encrypt(string text)
         {
-            using (var aes = new AesManaged())
+            using (var aes = Aes.Create())
             {
                 aes.KeySize = (int)Block;
                 aes.Key = Key;
@@ -76,7 +76,7 @@ namespace Asterism.Common.Crypt
         /// <returns></returns>
         public string Decrypt(byte[] data)
         {
-            using (var aes = new AesManaged())
+            using (var aes = Aes.Create())
             {
                 aes.KeySize = (int)Block;
                 aes.Key = Key;

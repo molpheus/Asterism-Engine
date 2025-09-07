@@ -59,7 +59,7 @@ namespace UnitTest.System
             _pomodoroTimer.Start(now, true);
 
             // Act
-            TimeSpan elapsed = _pomodoroTimer.Update(now + TimeSpan.FromMinutes(25)).Value;
+            TimeSpan elapsed = _pomodoroTimer.Update(now + TimeSpan.FromMinutes(25), out var _).Value;
 
             // Assert
             Assert.AreEqual(PomodoroTimer.PomodoroState.Resting, _pomodoroTimer.State);
@@ -73,12 +73,12 @@ namespace UnitTest.System
             // Arrange
             DateTime now = DateTime.Now;
             _pomodoroTimer.Start(now, true);
-            _pomodoroTimer.Update(now + TimeSpan.FromMinutes(25)); // Working -> Resting
+            _pomodoroTimer.Update(now + TimeSpan.FromMinutes(25), out var _); // Working -> Resting
 
             _pomodoroTimer.Play(now + TimeSpan.FromMinutes(25));
 
             // Act
-            TimeSpan elapsed = _pomodoroTimer.Update(now + TimeSpan.FromMinutes(30)).Value; // Resting -> Working
+            TimeSpan elapsed = _pomodoroTimer.Update(now + TimeSpan.FromMinutes(30), out var _).Value; // Resting -> Working
 
             // Assert
             Assert.AreEqual(PomodoroTimer.PomodoroState.Working, _pomodoroTimer.State);
@@ -94,31 +94,31 @@ namespace UnitTest.System
 
             // 1
             now += TimeSpan.FromMinutes(25);
-            _pomodoroTimer.Update(now); // Working -> Resting
+            _pomodoroTimer.Update(now, out var _); // Working -> Resting
             _pomodoroTimer.Play(now);
             now += TimeSpan.FromMinutes(5);
-            _pomodoroTimer.Update(now); // Resting -> Working
+            _pomodoroTimer.Update(now, out var _); // Resting -> Working
             _pomodoroTimer.Play(now);
             // 2
             now += TimeSpan.FromMinutes(25);
-            _pomodoroTimer.Update(now); // Working -> Resting
+            _pomodoroTimer.Update(now, out var _); // Working -> Resting
             _pomodoroTimer.Play(now);
             now += TimeSpan.FromMinutes(5);
-            _pomodoroTimer.Update(now); // Resting -> Working
+            _pomodoroTimer.Update(now, out var _); // Resting -> Working
             _pomodoroTimer.Play(now);
             // 3
             now += TimeSpan.FromMinutes(25);
-            _pomodoroTimer.Update(now); // Working -> Resting
+            _pomodoroTimer.Update(now, out var _); // Working -> Resting
             _pomodoroTimer.Play(now);
             now += TimeSpan.FromMinutes(5);
-            _pomodoroTimer.Update(now); // Resting -> Working
+            _pomodoroTimer.Update(now, out var _); // Resting -> Working
             _pomodoroTimer.Play(now);
             // 4
             now += TimeSpan.FromMinutes(25);
-            _pomodoroTimer.Update(now); // Working -> Resting
+            _pomodoroTimer.Update(now, out var _); // Working -> Resting
             _pomodoroTimer.Play(now);
             now += TimeSpan.FromMinutes(5);
-            _pomodoroTimer.Update(now); // Resting -> Working
+            _pomodoroTimer.Update(now, out var _); // Resting -> Working
             _pomodoroTimer.Play(now);
 
             // Assert
@@ -135,37 +135,37 @@ namespace UnitTest.System
 
             // 1
             now += TimeSpan.FromMinutes(25);
-            _pomodoroTimer.Update(now); // Working -> Resting
+            _pomodoroTimer.Update(now, out var _); // Working -> Resting
             _pomodoroTimer.Play(now);
             now += TimeSpan.FromMinutes(5);
-            _pomodoroTimer.Update(now); // Resting -> Working
+            _pomodoroTimer.Update(now, out var _); // Resting -> Working
             _pomodoroTimer.Play(now);
             // 2
             now += TimeSpan.FromMinutes(25);
-            _pomodoroTimer.Update(now); // Working -> Resting
+            _pomodoroTimer.Update(now, out var _); // Working -> Resting
             _pomodoroTimer.Play(now);
             now += TimeSpan.FromMinutes(5);
-            _pomodoroTimer.Update(now); // Resting -> Working
+            _pomodoroTimer.Update(now, out var _); // Resting -> Working
             _pomodoroTimer.Play(now);
             // 3
             now += TimeSpan.FromMinutes(25);
-            _pomodoroTimer.Update(now); // Working -> Resting
+            _pomodoroTimer.Update(now, out var _); // Working -> Resting
             _pomodoroTimer.Play(now);
             now += TimeSpan.FromMinutes(5);
-            _pomodoroTimer.Update(now); // Resting -> Working
+            _pomodoroTimer.Update(now, out var _); // Resting -> Working
             _pomodoroTimer.Play(now);
             // 4
             now += TimeSpan.FromMinutes(25);
-            _pomodoroTimer.Update(now); // Working -> Resting
+            _pomodoroTimer.Update(now, out var _); // Working -> Resting
             _pomodoroTimer.Play(now);
             now += TimeSpan.FromMinutes(5);
-            _pomodoroTimer.Update(now); // Resting -> Working
+            _pomodoroTimer.Update(now, out var _); // Resting -> Working
             _pomodoroTimer.Play(now);
             // LongResting
             now += TimeSpan.FromMinutes(15);
 
             // Act
-            TimeSpan elapsed = _pomodoroTimer.Update(now).Value; // LongResting -> Working
+            TimeSpan elapsed = _pomodoroTimer.Update(now, out var _).Value; // LongResting -> Working
 
             // Assert
             Assert.AreEqual(PomodoroTimer.PomodoroState.Working, _pomodoroTimer.State);
