@@ -186,6 +186,7 @@ namespace UnitTest.Network
             Assert.AreEqual(string.Empty, result.ErrorMessage);
             Assert.IsNotNull(result.ExtractedData);
             Assert.AreEqual(0, result.ExtractedData.Count);
+            Assert.IsFalse(result.IsDynamic);
         }
 
         [TestMethod]
@@ -200,6 +201,130 @@ namespace UnitTest.Network
             Assert.AreEqual(string.Empty, tagData.InnerHtml);
             Assert.IsNotNull(tagData.Attributes);
             Assert.AreEqual(0, tagData.Position);
+        }
+
+        [TestMethod]
+        public void DynamicExtractionOptions_ShouldInitializeWithDefaults()
+        {
+            // Arrange & Act
+            var options = new DynamicExtractionOptions();
+
+            // Assert
+            Assert.IsTrue(options.Headless);
+            Assert.AreEqual(30, options.PageLoadTimeoutSeconds);
+            Assert.AreEqual(2.0, options.AdditionalWaitSeconds);
+            Assert.AreEqual(string.Empty, options.UserAgent);
+        }
+
+        [TestMethod]
+        public void DynamicExtractionOptions_ShouldAllowCustomization()
+        {
+            // Arrange & Act
+            var options = new DynamicExtractionOptions
+            {
+                Headless = false,
+                PageLoadTimeoutSeconds = 60,
+                AdditionalWaitSeconds = 5.0,
+                UserAgent = "CustomAgent/1.0"
+            };
+
+            // Assert
+            Assert.IsFalse(options.Headless);
+            Assert.AreEqual(60, options.PageLoadTimeoutSeconds);
+            Assert.AreEqual(5.0, options.AdditionalWaitSeconds);
+            Assert.AreEqual("CustomAgent/1.0", options.UserAgent);
+        }
+
+        [TestMethod]
+        public void WebContentCloner_ShouldAcceptDynamicOptions()
+        {
+            // Arrange
+            var options = new DynamicExtractionOptions
+            {
+                Headless = true,
+                PageLoadTimeoutSeconds = 45
+            };
+
+            // Act & Assert (should not throw)
+            var cloner = new WebContentCloner(options);
+            Assert.IsNotNull(cloner);
+        }
+
+        [TestMethod]
+        public void WebContentCloner_ShouldAcceptWebConnecterAndDynamicOptions()
+        {
+            // Arrange
+            var webConnecter = new WebConnecter();
+            var options = new DynamicExtractionOptions();
+
+            // Act & Assert (should not throw)
+            var cloner = new WebContentCloner(webConnecter, options);
+            Assert.IsNotNull(cloner);
+        }
+
+        [TestMethod]
+        public async Task WebContentCloner_CloneDynamicAsync_ShouldHandleInvalidUrl()
+        {
+            // Arrange
+            var cloner = new WebContentCloner(new DynamicExtractionOptions());
+            var invalidUrl = "not-a-valid-url";
+
+            // Act
+            var result = await cloner.CloneDynamicAsync(invalidUrl);
+
+            // Assert
+            Assert.IsFalse(result.Success);
+            Assert.IsTrue(result.ErrorMessage.Contains("Invalid URL"));
+            Assert.IsTrue(result.IsDynamic);
+        }
+
+        [TestMethod]
+        public async Task WebContentCloner_CloneDynamicWithElementWaitAsync_ShouldHandleInvalidUrl()
+        {
+            // Arrange
+            var cloner = new WebContentCloner(new DynamicExtractionOptions());
+            var invalidUrl = "not-a-valid-url";
+
+            // Act
+            var result = await cloner.CloneDynamicWithElementWaitAsync(invalidUrl, ".some-element");
+
+            // Assert
+            Assert.IsFalse(result.Success);
+            Assert.IsTrue(result.ErrorMessage.Contains("Invalid URL"));
+            Assert.IsTrue(result.IsDynamic);
+        }
+
+        [TestMethod]
+        public async Task WebContentCloner_CloneInfiniteScrollAsync_ShouldHandleInvalidUrl()
+        {
+            // Arrange
+            var cloner = new WebContentCloner(new DynamicExtractionOptions());
+            var invalidUrl = "not-a-valid-url";
+
+            // Act
+            var result = await cloner.CloneInfiniteScrollAsync(invalidUrl, 5);
+
+            // Assert
+            Assert.IsFalse(result.Success);
+            Assert.IsTrue(result.ErrorMessage.Contains("Invalid URL"));
+            Assert.IsTrue(result.IsDynamic);
+        }
+
+        [TestMethod]
+        public async Task WebContentCloner_CloneDynamicWithScriptAsync_ShouldHandleInvalidUrl()
+        {
+            // Arrange
+            var cloner = new WebContentCloner(new DynamicExtractionOptions());
+            var invalidUrl = "not-a-valid-url";
+            var script = "console.log('test');";
+
+            // Act
+            var result = await cloner.CloneDynamicWithScriptAsync(invalidUrl, script);
+
+            // Assert
+            Assert.IsFalse(result.Success);
+            Assert.IsTrue(result.ErrorMessage.Contains("Invalid URL"));
+            Assert.IsTrue(result.IsDynamic);
         }
     }
 }

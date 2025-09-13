@@ -37,6 +37,8 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="HtmlAgilityPack" Version="1.12.2" />
+    <PackageReference Include="Selenium.WebDriver" Version="4.16.2" />
+    <PackageReference Include="Selenium.WebDriver.ChromeDriver" Version="120.0.6099.7100" />
     <Reference Update="System.Drawing">
       <HintPath>..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.8\System.Drawing.dll</HintPath>
     </Reference>

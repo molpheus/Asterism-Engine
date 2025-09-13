@@ -55,5 +55,6 @@ namespace Asterism.Common.Network
         public ParsedWebContent Content { get; set; }
         public List<ExtractedTagData> ExtractedData { get; set; } = new();
         public TimeSpan ProcessingTime { get; set; }
+        public bool IsDynamic { get; set; } = false;
     }
 }
