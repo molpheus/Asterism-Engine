@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
 	  <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
-	  <TargetFramework>net9.0</TargetFramework>
+	  <TargetFramework>net8.0</TargetFramework>
     <OutputType>Library</OutputType>
     <RootNamespace>Asterism</RootNamespace>
     <AssemblyName>AsterismCore</AssemblyName>
@@ -36,6 +36,9 @@
     <None Remove="UnitTest\**" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="HtmlAgilityPack" Version="1.12.2" />
+    <PackageReference Include="Selenium.WebDriver" Version="4.16.2" />
+    <PackageReference Include="Selenium.WebDriver.ChromeDriver" Version="120.0.6099.7100" />
     <Reference Update="System.Drawing">
       <HintPath>..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.8\System.Drawing.dll</HintPath>
     </Reference>

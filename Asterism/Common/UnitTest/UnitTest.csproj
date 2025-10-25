@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
 	  <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
-	  <TargetFramework>net9.0</TargetFramework>
+	  <TargetFramework>net8.0</TargetFramework>
     <OutputType>Library</OutputType>
     <LangVersion>12.0</LangVersion>
     <AssemblyTitle>UnitTest</AssemblyTitle>
@@ -23,6 +23,8 @@
     <PackageReference Include="System.Reactive" Version="6.0.2" />
     <PackageReference Include="System.Reactive.Core" Version="6.0.2" />
     <PackageReference Include="System.Reactive.Linq" Version="6.0.2" />
+    <PackageReference Include="Selenium.WebDriver" Version="4.16.2" />
+    <PackageReference Include="Selenium.WebDriver.ChromeDriver" Version="120.0.6099.7100" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Common.csproj" />
